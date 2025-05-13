@@ -374,8 +374,11 @@ body {
     transform: scale(1.1);
 }
 
-/* AI Tools */
-.ai-tools {
+.lang-tools {
+    transition: var(--transition); /* Add transition */
+}
+
+.lang-tools {
     display: flex;
     gap: 20px;
     padding: 10px 20px;
@@ -383,9 +386,25 @@ body {
     border-radius: var(--round);
 }
 
-.ai-tool {
+/* AI Tools */
+.ai-tools {
     display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 15px;
+    min-width: auto; /* Remove fixed min-width */
+    max-width: 100%; /* Allow flexibility */
+    white-space: nowrap; /* Prevent text wrapping */
+    flex-shrink: 0; /* Prevent shrinking */
+    padding: 10px 15px; /* Adjust padding for text length */
+}
+
+
+.ai-tool {
+    display: inline-flex;
+    width: auto;
     align-items: center;
+    min-width: min-content;
     gap: 10px;
     text-decoration: none;
     color: var(--text-light);
@@ -413,7 +432,6 @@ body {
     background-color: var(--accent-light);
     padding: 15px;
     border-radius: var(--round);
-    margin-top: 10px;
 }
 
 .form-group {
@@ -462,11 +480,129 @@ body {
     transform: scale(1.05);
 }
 
+.bottom-section {
+    position: fixed;
+    gap: var(--gap);
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--accent-light);
+    border-radius: var(--round);
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    flex-wrap: wrap;
+}
+
+.currency-exchanger,
+.lang-tools,
+.ai-tools {
+    background-color: var(--bg-color);
+    padding: 20px;
+    border-radius: var(--round);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 0 10px;
+    min-width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    transition: var(--transition);
+}
+
+.lang-tools {
+    transition: var(--transition); /* Add transition */
+}
+
+.currency-exchanger:hover,
+.lang-tools:hover,
+.ai-tools:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+
+.currency-exchanger {
+    flex: 0 0 350px; /* Fixed width, adjust as needed */
+    margin-top: 0; /* Remove previous margin */
+}
+
+.lang-tools {
+    flex: 1;
+    min-width: 150px;
+    max-width: 300px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+}
+
+.ai-tools {
+    flex: 1;
+    min-width: 700px;
+    max-width: 700px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+}
+
+
+.exchange-form input,
+.exchange-form select,
+.exchange-form button {
+    padding: 10px;
+    border: none;
+    background: var(--bg-color);
+    color: var(--text-light);
+    border-radius: 5px;
+}
+
+.exchange-form input {
+    width: 100px;
+}
+
+.exchange-form select {
+    width: 100px;
+}
+
+.exchange-form button {
+    background-color: var(--primary-blue);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.exchange-form button:hover {
+    background-color: var(--primary-dark);
+    transform: scale(1.05);
+}
+
+#swap-btn {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+#swap-btn:hover {
+    color: var(--primary-blue);
+}
+
+#result {
+    font-size: 1.2rem;
+    color: var(--text-light);
+}
+
+
+
+
 /* Animations */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
+
 
 @keyframes slideUp {
     from { transform: translateY(10px); opacity: 0; }
@@ -491,6 +627,19 @@ body {
 
     .left-half,
     .right-half {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .bottom-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .currency-exchanger,
+    .ai-tools {
+        flex: none;
         width: 100%;
     }
 }

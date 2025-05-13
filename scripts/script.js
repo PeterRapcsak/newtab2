@@ -10,6 +10,14 @@ const domElements = {
         minutes: document.getElementById('digi-minutes'),
         ampm: document.getElementById('am-pm')
     },
+    currency: {
+        fromSelect: document.getElementById('from-currency'),
+        toSelect: document.getElementById('to-currency'),
+        amountInput: document.getElementById('amount'),
+        convertButton: document.getElementById('convert-btn'),
+        swapButton: document.getElementById('swap-btn'),
+        resultDiv: document.getElementById('result')
+    },
     search: {
         input: document.getElementById('search-q'),
         button: document.getElementById('search-btn'),
@@ -37,6 +45,91 @@ const domElements = {
         new: null
     }
 };
+
+// Fetch and populate currency dropdowns, load saved preferences
+async function loadCurrencies() {
+    try {
+        const response = await fetch('https://api.frankfurter.app/currencies');
+        const currencies = await response.json();
+        const currencyList = Object.keys(currencies);
+        
+        if (domElements.currency.fromSelect && domElements.currency.toSelect) {
+            currencyList.forEach(currency => {
+                const option1 = document.createElement('option');
+                option1.value = currency;
+                option1.textContent = currency;
+                domElements.currency.fromSelect.appendChild(option1);
+                
+                const option2 = document.createElement('option');
+                option2.value = currency;
+                option2.textContent = currency;
+                domElements.currency.toSelect.appendChild(option2);
+            });
+            
+            // Always default to EUR → HUF
+            domElements.currency.fromSelect.value = 'EUR';
+            domElements.currency.toSelect.value = 'HUF';
+            
+            // Save default preferences
+            chrome.storage.local.set({
+                fromCurrency: 'EUR',
+                toCurrency: 'HUF'
+            });
+
+            // Automatically perform conversion when page loads
+            if (domElements.currency.amountInput) {
+                domElements.currency.amountInput.value = '1';
+                convertCurrency();
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching currencies:', error);
+    }
+}
+
+
+// Perform currency conversion
+async function convertCurrency() {
+    const from = domElements.currency.fromSelect?.value;
+    const to = domElements.currency.toSelect?.value;
+    const amount = parseFloat(domElements.currency.amountInput?.value);
+    
+    if (!from || !to || isNaN(amount) || amount <= 0) {
+        domElements.currency.resultDiv.textContent = 'Please enter a valid amount and select currencies.';
+        return;
+    }
+    
+    try {
+        const response = await fetch(`https://api.frankfurter.app/latest?from=${from}&to=${to}`);
+        const data = await response.json();
+        const rate = data.rates[to];
+        const result = (amount * rate).toFixed(2);
+        
+        // Format the result with spaces (e.g., 1 000 000,00)
+        const formattedResult = new Intl.NumberFormat('hu-HU', {
+            style: 'currency',
+            currency: to,
+            useGrouping: true
+        }).format(result);
+        
+        domElements.currency.resultDiv.textContent = `${amount} ${from} = ${formattedResult}`;
+    } catch (error) {
+        console.error('Error fetching exchange rate:', error);
+        domElements.currency.resultDiv.textContent = 'Error fetching exchange rate. Please try again later.';
+    }
+}
+
+// Swap the selected currencies
+function swapCurrencies() {
+    const from = domElements.currency.fromSelect?.value;
+    const to = domElements.currency.toSelect?.value;
+    domElements.currency.fromSelect.value = to;
+    domElements.currency.toSelect.value = from;
+    chrome.storage.local.set({
+        fromCurrency: to,
+        toCurrency: from
+    });
+}
 
 function checkDomElements() {
     console.log('Checking DOM elements:', {
@@ -342,13 +435,61 @@ function toggleAddMode() {
     }
 }
 
+
+async function fetchNewsHeadlines() {
+    try {
+        // Using Bloomberg's free RSS feed
+        const rssUrl = 'https://www.bloomberg.com/feeds/podcasts/financial-wellness.rss';
+        const response = await fetch(rssUrl);
+        const text = await response.text();
+        
+        // Simple RSS parser
+        const parser = new DOMParser();
+        const rss = parser.parseFromString(text, 'text/xml');
+        const items = rss.querySelectorAll('item');
+        
+        const newsContainer = document.getElementById('news-container');
+        newsContainer.innerHTML = '';
+        
+        // Limit to 5 latest items
+        Array.from(items).slice(0, 5).forEach(item => {
+            const title = item.querySelector('title').textContent;
+            const link = item.querySelector('link').textContent;
+            const date = item.querySelector('pubDate').textContent;
+            
+            const newsItem = document.createElement('div');
+            newsItem.className = 'news-item';
+            newsItem.innerHTML = `
+                <a href="${link}" target="_blank">
+                    <span>${title}</span>
+                </a>
+                <span class="news-date">${new Date(date).toLocaleDateString()}</span>
+            `;
+            newsContainer.appendChild(newsItem);
+        });
+    } catch (error) {
+        console.error('Error fetching news:', error);
+        const newsContainer = document.getElementById('news-container');
+        newsContainer.innerHTML = '<div style="color: #ff4444;">Failed to load news headlines</div>';
+    }
+}
+
+
+
 function init() {
     checkDomElements();
     updateClock();
     setInterval(updateClock, 1000);
     setupSearch();
     loadShortcuts();
-    
+    loadCurrencies();
+
+    if (domElements.currency.convertButton) {
+        domElements.currency.convertButton.addEventListener('click', convertCurrency);
+    }
+    if (domElements.currency.swapButton) {
+        domElements.currency.swapButton.addEventListener('click', swapCurrencies);
+    }
     if (domElements.shortcuts.addButton) {
         domElements.shortcuts.addButton.addEventListener('click', addShortcut);
     };
