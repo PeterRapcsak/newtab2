@@ -119,6 +119,19 @@ async function convertCurrency() {
     }
 }
 
+function handleShortcutClick(event) {
+    // Middle mouse button (button 1) or ctrl/cmd+click
+    if (event.button === 1 || event.ctrlKey || event.metaKey) {
+        // Open in new tab (default browser behavior)
+        return true;
+    }
+    
+    // Regular click - open in current tab
+    event.preventDefault();
+    window.location.href = event.currentTarget.href;
+    return false;
+}
+
 // Swap the selected currencies
 function swapCurrencies() {
     const from = domElements.currency.fromSelect?.value;
@@ -225,12 +238,12 @@ function renderShortcuts() {
         shortcutEl.setAttribute('draggable', 'true');
         shortcutEl.dataset.index = index;
         shortcutEl.innerHTML = `
-            <a href="${shortcut.url}" target="_blank">
-                <img src="https://www.google.com/s2/favicons?domain=${new URL(shortcut.url).hostname}&sz=64" alt="${shortcut.name}">
-            </a>
-            <span class="shortcut-name">${shortcut.name}</span>
-            ${isEditMode ? `<button class="delete-shortcut-btn" data-index="${index}">×</button>` : ''}
-        `;
+        <a href="${shortcut.url}">
+            <img src="https://www.google.com/s2/favicons?domain=${new URL(shortcut.url).hostname}&sz=64" alt="${shortcut.name}">
+        </a>
+        <span class="shortcut-name">${shortcut.name}</span>
+        ${isEditMode ? `<button class="delete-shortcut-btn" data-index="${index}">×</button>` : ''}
+    `;
         domElements.shortcuts.container.appendChild(shortcutEl);
     });
 
