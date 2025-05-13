@@ -93,26 +93,37 @@ async function convertCurrency() {
     const from = domElements.currency.fromSelect?.value;
     const to = domElements.currency.toSelect?.value;
     const amount = parseFloat(domElements.currency.amountInput?.value);
-    
+
     if (!from || !to || isNaN(amount) || amount <= 0) {
         domElements.currency.resultDiv.textContent = 'Please enter a valid amount and select currencies.';
         return;
     }
-    
+
     try {
         const response = await fetch(`https://api.frankfurter.app/latest?from=${from}&to=${to}`);
         const data = await response.json();
         const rate = data.rates[to];
-        const result = (amount * rate).toFixed(2);
-        
-        // Format the result with spaces (e.g., 1 000 000,00)
-        const formattedResult = new Intl.NumberFormat('hu-HU', {
+        const result = amount * rate;
+
+        // Hungarian number formatters (space as thousand separator)
+        const numberFormatter = new Intl.NumberFormat('hu-HU', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2,
+            useGrouping: true
+        });
+
+        const currencyFormatter = new Intl.NumberFormat('hu-HU', {
             style: 'currency',
             currency: to,
-            useGrouping: true
-        }).format(result);
-        
-        domElements.currency.resultDiv.textContent = `${amount} ${from} = ${formattedResult}`;
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2
+        });
+
+        // Format both the input amount and the result
+        const formattedAmount = numberFormatter.format(amount);
+        const formattedResult = currencyFormatter.format(result);
+
+        domElements.currency.resultDiv.textContent = `${formattedAmount} ${from} = ${formattedResult}`;
     } catch (error) {
         console.error('Error fetching exchange rate:', error);
         domElements.currency.resultDiv.textContent = 'Error fetching exchange rate. Please try again later.';
