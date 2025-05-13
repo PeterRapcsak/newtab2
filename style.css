@@ -299,17 +299,25 @@ body {
     color: var(--text-dark);
 }
 
-.edit-shortcut-btn {
-    background: var(--dark-blue);
+.delete-shortcut-btn {
+    background: red;
     color: white;
     border: none;
     cursor: pointer;
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-size: 0.8rem;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 1rem;
+    line-height: 20px;
+    text-align: center;
     position: absolute;
-    top: 0;
-    right: 0;
+    top: -10px;
+    right: -10px;
+}
+
+.delete-shortcut-btn:hover {
+    background: darkred;
 }
 
 /* AI Tools */

@@ -104,17 +104,18 @@ function renderShortcuts() {
                 <img src="https://www.google.com/s2/favicons?domain=${new URL(shortcut.url).hostname}&sz=64" alt="${shortcut.name}">
             </a>
             <span class="shortcut-name">${shortcut.name}</span>
-            ${isEditMode ? `<button class="edit-shortcut-btn" data-index="${index}">Edit</button>` : ''}
+            ${isEditMode ? `<button class="delete-shortcut-btn" data-index="${index}">&times;</button>` : ''}
         `;
         domElements.shortcuts.container.appendChild(shortcutEl);
     });
 
-    // Add event listeners for edit buttons if in edit mode
+    // Add event listeners for delete buttons if in edit mode
     if (isEditMode) {
-        document.querySelectorAll('.edit-shortcut-btn').forEach(btn => {
+        document.querySelectorAll('.delete-shortcut-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                startEditingShortcut(parseInt(e.target.dataset.index));
+                const index = parseInt(e.target.dataset.index);
+                deleteShortcut(index);
             });
         });
     }
@@ -237,20 +238,17 @@ function saveEditedShortcut() {
 }
 
 // Delete a shortcut
-function deleteShortcut() {
-    if (currentEditIndex === null || currentEditIndex < 0 || currentEditIndex >= shortcutsConfig.shortcuts.length) {
-        console.error('Invalid edit index:', currentEditIndex);
+function deleteShortcut(index) {
+    if (index === null || index < 0 || index >= shortcutsConfig.shortcuts.length) {
+        console.error('Invalid edit index:', index);
         return;
     }
     
-    if (confirm('Are you sure you want to delete this shortcut?')) {
-        shortcutsConfig.shortcuts.splice(currentEditIndex, 1);
-        chrome.storage.local.set({ shortcutsConfig }, () => {
-            console.log('Shortcut deleted at index:', currentEditIndex);
-            cancelEditingShortcut();
-            renderShortcuts();
-        });
-    }
+    shortcutsConfig.shortcuts.splice(index, 1);
+    chrome.storage.local.set({ shortcutsConfig }, () => {
+        console.log('Shortcut deleted at index:', index);
+        renderShortcuts();
+    });
 }
 
 // Cancel editing shortcut
