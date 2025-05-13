@@ -1,0 +1,357 @@
+/* Simplified NewTab Styles */
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+:root {
+    --bg-color: #bbd6fd;
+    --accent-light: #e2eeff;
+    --dark-blue: #4382ec;
+    --darker-blue: #3569b2;
+    --text-dark: #1b3041;
+    --white: #ffffff;
+    --gap: 20px;
+    --round: 20px;
+    --shortcut-size: 70px; /* Increased size for better icon quality */
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--gap);
+}
+
+/* Top Section */
+.top-section {
+    display: flex;
+    width: 100%;
+    max-width: 1200px;
+    gap: var(--gap);
+    margin-bottom: var(--gap);
+}
+
+.left-half,
+.right-half {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+}
+
+/* Digital Clock */
+#digital-clock {
+    background-color: var(--accent-light);
+    padding: 20px;
+    border-radius: var(--round);
+    text-align: center;
+    font-size: 3rem;
+}
+
+#digi-hours,
+#digi-minutes {
+    color: var(--darker-blue);
+}
+
+#digi-colon,
+#am-pm {
+    color: var(--dark-blue);
+    margin: 0 5px;
+}
+
+#am-pm {
+    font-size: 1.5rem;
+    vertical-align: middle;
+}
+
+/* Search Bar */
+.search-bar {
+    display: flex;
+    gap: 10px;
+    background: var(--accent-light);
+    padding: 10px;
+    border-radius: var(--round);
+}
+
+#search-q {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: transparent;
+    font-size: 1rem;
+    outline: none;
+}
+
+#search-q::placeholder {
+    color: #757575;
+}
+
+#search-btn {
+    padding: 10px 20px;
+    border: none;
+    background-color: var(--dark-blue);
+    color: var(--white);
+    border-radius: var(--round);
+    cursor: pointer;
+}
+
+#search-btn:hover {
+    background-color: var(--darker-blue);
+}
+
+/* Add Shortcut Section */
+.add-shortcut {
+    display: none; /* Hidden by default */
+    gap: 10px;
+    background: var(--accent-light);
+    padding: 10px;
+    border-radius: var(--round);
+}
+
+#new-shortcut-name,
+#new-shortcut-url {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: transparent;
+    font-size: 1rem;
+    outline: none;
+}
+
+#new-shortcut-name::placeholder {
+    color: #757575;
+    flex: 0 0 30%;
+}
+
+#new-shortcut-url::placeholder {
+    color: #757575;
+    flex: 0 0 70%;
+}
+
+#add-shortcut-btn {
+    padding: 10px 20px;
+    border: none;
+    background-color: var(--dark-blue);
+    color: var(--white);
+    border-radius: var(--round);
+    cursor: pointer;
+}
+
+#add-shortcut-btn:hover {
+    background-color: var(--darker-blue);
+}
+
+/* Edit Popup */
+.edit-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.edit-popup-content {
+    background: var(--accent-light);
+    padding: 20px;
+    border-radius: var(--round);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 90%;
+    max-width: 400px;
+}
+
+.edit-popup-content h3 {
+    margin-bottom: 10px;
+    color: var(--text-dark);
+}
+
+#edit-shortcut-name,
+#edit-shortcut-url {
+    padding: 10px;
+    border: none;
+    background: var(--white);
+    font-size: 1rem;
+    outline: none;
+    border-radius: 5px;
+}
+
+#edit-shortcut-name::placeholder,
+#edit-shortcut-url::placeholder {
+    color: #757575;
+}
+
+.edit-popup-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+#save-shortcut-btn,
+#delete-shortcut-btn,
+#cancel-shortcut-btn {
+    padding: 10px 20px;
+    border: none;
+    color: var(--white);
+    border-radius: var(--round);
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+#save-shortcut-btn {
+    background-color: var(--dark-blue);
+}
+
+#save-shortcut-btn:hover {
+    background-color: var(--darker-blue);
+}
+
+#delete-shortcut-btn {
+    background-color: red;
+}
+
+#delete-shortcut-btn:hover {
+    background-color: darkred;
+}
+
+#cancel-shortcut-btn {
+    background-color: #757575;
+}
+
+#cancel-shortcut-btn:hover {
+    background-color: #5c5c5c;
+}
+
+/* Button Container for Edit and New Buttons */
+.button-container {
+    display: flex;
+    gap: 10px;
+    align-self: flex-end;
+}
+
+/* Edit and New Buttons */
+#edit-btn,
+#new-btn {
+    padding: 10px 20px;
+    border: none;
+    background-color: var(--dark-blue);
+    color: var(--white);
+    border-radius: var(--round);
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+#edit-btn:hover,
+#new-btn:hover {
+    background-color: var(--darker-blue);
+}
+
+/* Shortcuts */
+.shortcuts-container {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    padding: 20px;
+    background-color: var(--accent-light);
+    border-radius: var(--round);
+    flex-wrap: wrap;
+}
+
+.shortcut {
+    text-align: center;
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    align-items: center;
+    gap: 10px;
+    position: relative; /* For positioning edit button */
+}
+
+.shortcut a {
+    display: block;
+    width: var(--shortcut-size);
+    height: var(--shortcut-size);
+    background-color: var(--dark-blue);
+    padding: 10px; /* Add padding for better appearance */
+    border-radius: 10px; /* Subtle rounding for aesthetics */
+}
+
+.shortcut img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Preserve aspect ratio, no squishing */
+}
+
+.shortcut-name {
+    font-size: 1rem;
+    color: var(--text-dark);
+}
+
+.edit-shortcut-btn {
+    background: var(--dark-blue);
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+/* AI Tools */
+.ai-tools {
+    display: flex;
+    gap: 20px;
+    padding: 10px 20px;
+    background-color: var(--accent-light);
+    border-radius: var(--round);
+}
+
+.ai-tool {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text-dark);
+    padding: 10px;
+    border-radius: var(--round);
+}
+
+.ai-tool:hover {
+    background-color: var(--bg-color);
+}
+
+.ai-tool img {
+    width: 30px;
+    height: 30px;
+}
+
+.ai-tool span {
+    font-size: 1rem;
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 945px) {
+    .top-section {
+        flex-direction: column;
+    }
+
+    .left-half,
+    .right-half {
+        width: 100%;
+    }
+}

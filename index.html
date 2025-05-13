@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Tab</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="top-section">
+        <div class="left-half">
+            <div id="digital-clock">
+                <span id="digi-hours">0</span>
+                <span id="digi-colon">:</span>
+                <span id="digi-minutes">0</span>
+                <span id="am-pm">PM</span>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="search-q" placeholder="Search">
+                <button id="search-btn">Search</button>
+            </div>
+        </div>
+        <div class="right-half">
+            <div class="add-shortcut">
+                <input type="text" id="new-shortcut-name" placeholder="Name">
+                <input type="text" id="new-shortcut-url" placeholder="URL">
+                <button id="add-shortcut-btn">Pin</button>
+            </div>
+            <div class="edit-shortcut" style="display: none;">
+                <input type="text" id="edit-shortcut-name" placeholder="Name">
+                <input type="text" id="edit-shortcut-url" placeholder="URL">
+                <button id="save-shortcut-btn">Save</button>
+                <button id="delete-shortcut-btn">Delete</button>
+            </div>
+            <div class="shortcuts-container" id="shortcuts-container">
+                <!-- Shortcuts will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+    <div class="ai-tools">
+        <a href="https://chat.openai.com/" target="_blank" class="ai-tool">
+            <img src="https://www.google.com/s2/favicons?domain=chat.openai.com&sz=32" alt="ChatGPT">
+            <span>ChatGPT</span>
+        </a>
+        <a href="https://grok.x.ai/" target="_blank" class="ai-tool">
+            <img src="https://www.google.com/s2/favicons?domain=grok.x.ai&sz=32" alt="Grok">
+            <span>Grok</span>
+        </a>
+    </div>
+    <div id="edit-popup" class="edit-popup" style="display: none;">
+        <div class="edit-popup-content">
+            <h3>Edit Shortcut</h3>
+            <input type="text" id="edit-shortcut-name" placeholder="Name">
+            <input type="text" id="edit-shortcut-url" placeholder="URL">
+            <div class="edit-popup-buttons">
+                <button id="save-shortcut-btn">Save</button>
+                <button id="delete-shortcut-btn">Delete</button>
+                <button id="cancel-shortcut-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <script src="scripts/script.js"></script>
+</body>
+</html>
