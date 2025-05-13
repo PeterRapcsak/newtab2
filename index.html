@@ -9,17 +9,57 @@
 <body>
     <div class="top-section">
         <div class="left-half">
-            <div id="digital-clock">
-                <span id="digi-hours">0</span>
-                <span id="digi-colon">:</span>
-                <span id="digi-minutes">0</span>
-                <span id="am-pm">PM</span>
+        <div id="digital-clock">
+            <span id="digi-hours">00</span>
+            <span id="digi-colon">:</span>
+            <span id="digi-minutes">00</span>
+            <span id="am-pm">PM</span>
+        </div>
+        <div class="search-bar">
+            <input type="text" id="search-q" placeholder="Search">
+            <button id="search-btn">Search</button>
+            <button id="advanced-btn">Advanced</button>
+        </div>
+        <div class="advanced-search" id="advanced-search" style="display: none;">
+            <h3>Advanced Search</h3>
+            <div class="form-group">
+                <label>All these words:</label>
+                <input type="text" id="adv-all-words">
             </div>
-            <div class="search-bar">
-                <input type="text" id="search-q" placeholder="Search">
-                <button id="search-btn">Search</button>
+            <div class="form-group">
+                <label>Exact phrase:</label>
+                <input type="text" id="adv-exact-phrase">
+            </div>
+            <div class="form-group">
+                <label>Any of these words:</label>
+                <input type="text" id="adv-any-words">
+            </div>
+            <div class="form-group">
+                <label>None of these words:</label>
+                <input type="text" id="adv-none-words">
+            </div>
+            <div class="form-group">
+                <label>File type:</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" value="pdf"> PDF</label>
+                    <label><input type="checkbox" value="doc"> DOC</label>
+                    <label><input type="checkbox" value="xls"> XLS</label>
+                    <label><input type="checkbox" value="ppt"> PPT</label>
+                    <label><input type="checkbox" value="txt"> TXT</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Last update:</label>
+                <select id="adv-date-range">
+                    <option value="">Any time</option>
+                    <option value="d">Past 24 hours</option>
+                    <option value="w">Past week</option>
+                    <option value="m">Past month</option>
+                    <option value="y">Past year</option>
+                </select>
             </div>
         </div>
+    </div>
         <div class="right-half">
             <div class="add-shortcut">
                 <input type="text" id="new-shortcut-name" placeholder="Name">
@@ -49,6 +89,14 @@
         <a href="https://chat.deepseek.com/" target="_blank" class="ai-tool">
             <img src="https://www.google.com/s2/favicons?domain=chat.deepseek.com&sz=32" alt="Deepseek">
             <span>Deepseek</span>
+        </a>
+        <a href="https://gemini.google.com/app" target="_blank" class="ai-tool">
+            <img src="https://www.google.com/s2/favicons?domain=gemini.google.com/app&sz=32" alt="Gemini">
+            <span>Gemini</span>
+        </a>
+        <a href="https://www.blackbox.ai/" target="_blank" class="ai-tool">
+            <img src="https://www.google.com/s2/favicons?domain=www.blackbox.ai&sz=32" alt="blackbox">
+            <span>Blackbox</span>
         </a>
     </div>
     <div id="edit-popup" class="edit-popup" style="display: none;">

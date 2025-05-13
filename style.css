@@ -1,5 +1,5 @@
-/* Simplified NewTab Styles */
-@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+/* Modernized NewTab Styles */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap");
 
 * {
     margin: 0;
@@ -9,20 +9,21 @@
 }
 
 :root {
-    --bg-color: #bbd6fd;
-    --accent-light: #e2eeff;
-    --dark-blue: #4382ec;
-    --darker-blue: #3569b2;
-    --text-dark: #1b3041;
-    --white: #ffffff;
+    --bg-color: #1E2A44; /* Dark modern background */
+    --accent-light: #2A3A66; /* Light accent for cards */
+    --primary-blue: #3B82F6; /* Vibrant primary action color */
+    --primary-dark: #2563EB; /* Darker hover state */
+    --neutral-gray: #4B5EAA; /* Neutral secondary elements */
+    --text-light: #F5F7FA; /* Soft white for text */
     --gap: 20px;
-    --round: 20px;
-    --shortcut-size: 70px; /* Increased size for better icon quality */
+    --round: 20px; /* Maintain boxy style */
+    --shortcut-size: 70px; /* Consistent shortcut size */
+    --transition: all 0.3s ease; /* Smooth transitions */
 }
 
 body {
     background-color: var(--bg-color);
-    color: var(--text-dark);
+    color: var(--text-light);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -54,16 +55,22 @@ body {
     border-radius: var(--round);
     text-align: center;
     font-size: 3rem;
+    transition: var(--transition);
+}
+
+#digital-clock:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 #digi-hours,
 #digi-minutes {
-    color: var(--darker-blue);
+    color: var(--text-light);
 }
 
 #digi-colon,
 #am-pm {
-    color: var(--dark-blue);
+    color: var(--primary-blue);
     margin: 0 5px;
 }
 
@@ -79,6 +86,11 @@ body {
     background: var(--accent-light);
     padding: 10px;
     border-radius: var(--round);
+    transition: var(--transition);
+}
+
+.search-bar:hover {
+    transform: scale(1.02);
 }
 
 #search-q {
@@ -88,23 +100,26 @@ body {
     background: transparent;
     font-size: 1rem;
     outline: none;
+    color: var(--text-light);
 }
 
 #search-q::placeholder {
-    color: #757575;
+    color: var(--neutral-gray);
 }
 
 #search-btn {
     padding: 10px 20px;
     border: none;
-    background-color: var(--dark-blue);
-    color: var(--white);
+    background-color: var(--primary-blue);
+    color: var(--text-light);
     border-radius: var(--round);
     cursor: pointer;
+    transition: var(--transition);
 }
 
 #search-btn:hover {
-    background-color: var(--darker-blue);
+    background-color: var(--primary-dark);
+    transform: scale(1.05);
 }
 
 /* Add Shortcut Section */
@@ -116,37 +131,51 @@ body {
     border-radius: var(--round);
 }
 
+.add-shortcut.show {
+    display: flex;
+    animation: slideDown 0.3s ease-in forwards;
+}
+
+.add-shortcut.hide {
+    animation: slideUp 0.3s ease-out forwards;
+}
+
 #new-shortcut-name,
 #new-shortcut-url {
-    flex: 1;
     padding: 10px;
     border: none;
     background: transparent;
     font-size: 1rem;
     outline: none;
+    color: var(--text-light);
 }
 
-#new-shortcut-name::placeholder {
-    color: #757575;
-    flex: 0 0 30%;
+#new-shortcut-name {
+    flex: 1; /* Smaller proportion for name */
 }
 
+#new-shortcut-url {
+    flex: 7; /* Larger proportion for URL */
+}
+
+#new-shortcut-name::placeholder,
 #new-shortcut-url::placeholder {
-    color: #757575;
-    flex: 0 0 70%;
+    color: var(--neutral-gray);
 }
 
 #add-shortcut-btn {
     padding: 10px 20px;
     border: none;
-    background-color: var(--dark-blue);
-    color: var(--white);
+    background-color: var(--primary-blue);
+    color: var(--text-light);
     border-radius: var(--round);
     cursor: pointer;
+    transition: var(--transition);
 }
 
 #add-shortcut-btn:hover {
-    background-color: var(--darker-blue);
+    background-color: var(--primary-dark);
+    transform: scale(1.05);
 }
 
 /* Edit Popup */
@@ -156,11 +185,12 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.7);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
+    animation: fadeIn 0.3s ease-in;
 }
 
 .edit-popup-content {
@@ -172,26 +202,28 @@ body {
     gap: 10px;
     width: 90%;
     max-width: 400px;
+    animation: slideUp 0.3s ease-in;
 }
 
 .edit-popup-content h3 {
     margin-bottom: 10px;
-    color: var(--text-dark);
+    color: var(--text-light);
 }
 
 #edit-shortcut-name,
 #edit-shortcut-url {
     padding: 10px;
     border: none;
-    background: var(--white);
+    background: var(--bg-color);
     font-size: 1rem;
     outline: none;
     border-radius: 5px;
+    color: var(--text-light);
 }
 
 #edit-shortcut-name::placeholder,
 #edit-shortcut-url::placeholder {
-    color: #757575;
+    color: var(--neutral-gray);
 }
 
 .edit-popup-buttons {
@@ -205,34 +237,38 @@ body {
 #cancel-shortcut-btn {
     padding: 10px 20px;
     border: none;
-    color: var(--white);
+    color: var(--text-light);
     border-radius: var(--round);
     cursor: pointer;
     font-size: 1rem;
+    transition: var(--transition);
 }
 
 #save-shortcut-btn {
-    background-color: var(--dark-blue);
+    background-color: var(--primary-blue);
 }
 
 #save-shortcut-btn:hover {
-    background-color: var(--darker-blue);
+    background-color: var(--primary-dark);
+    transform: scale(1.05);
 }
 
 #delete-shortcut-btn {
-    background-color: red;
+    background-color: #EF4444;
 }
 
 #delete-shortcut-btn:hover {
-    background-color: darkred;
+    background-color: #DC2626;
+    transform: scale(1.05);
 }
 
 #cancel-shortcut-btn {
-    background-color: #757575;
+    background-color: var(--neutral-gray);
 }
 
 #cancel-shortcut-btn:hover {
-    background-color: #5c5c5c;
+    background-color: #3B4A8A;
+    transform: scale(1.05);
 }
 
 /* Button Container for Edit and New Buttons */
@@ -247,16 +283,18 @@ body {
 #new-btn {
     padding: 10px 20px;
     border: none;
-    background-color: var(--dark-blue);
-    color: var(--white);
+    background-color: var(--primary-blue);
+    color: var(--text-light);
     border-radius: var(--round);
     cursor: pointer;
     font-size: 1rem;
+    transition: var(--transition);
 }
 
 #edit-btn:hover,
 #new-btn:hover {
-    background-color: var(--darker-blue);
+    background-color: var(--primary-dark);
+    transform: scale(1.05);
 }
 
 /* Shortcuts */
@@ -273,35 +311,49 @@ body {
 .shortcut {
     text-align: center;
     display: flex;
-    flex-direction: column; /* Stack items vertically */
+    flex-direction: column;
     align-items: center;
     gap: 10px;
-    position: relative; /* For positioning edit button */
+    position: relative;
+    animation: fadeScale 0.5s ease-out;
+    animation-fill-mode: forwards;
+    cursor: move; /* Indicate draggable */
+}
+
+.shortcut.dragging {
+    opacity: 0.5;
+    transform: scale(1.1);
 }
 
 .shortcut a {
     display: block;
     width: var(--shortcut-size);
     height: var(--shortcut-size);
-    background-color: var(--dark-blue);
-    padding: 10px; /* Add padding for better appearance */
-    border-radius: 10px; /* Subtle rounding for aesthetics */
+    background-color: var(--primary-blue);
+    padding: 10px;
+    border-radius: 10px;
+    transition: var(--transition);
+}
+
+.shortcut a:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .shortcut img {
     width: 100%;
     height: 100%;
-    object-fit: contain; /* Preserve aspect ratio, no squishing */
+    object-fit: contain;
 }
 
 .shortcut-name {
     font-size: 1rem;
-    color: var(--text-dark);
+    color: var(--text-light);
 }
 
 .delete-shortcut-btn {
-    background: red;
-    color: white;
+    background: #EF4444;
+    color: var(--text-light);
     border: none;
     cursor: pointer;
     padding: 0;
@@ -314,10 +366,12 @@ body {
     position: absolute;
     top: -10px;
     right: -10px;
+    transition: var(--transition);
 }
 
 .delete-shortcut-btn:hover {
-    background: darkred;
+    background: #DC2626;
+    transform: scale(1.1);
 }
 
 /* AI Tools */
@@ -334,13 +388,15 @@ body {
     align-items: center;
     gap: 10px;
     text-decoration: none;
-    color: var(--text-dark);
+    color: var(--text-light);
     padding: 10px;
     border-radius: var(--round);
+    transition: var(--transition);
 }
 
 .ai-tool:hover {
-    background-color: var(--bg-color);
+    background-color: var(--neutral-gray);
+    transform: scale(1.02);
 }
 
 .ai-tool img {
@@ -350,6 +406,81 @@ body {
 
 .ai-tool span {
     font-size: 1rem;
+}
+
+/* Add to the bottom of style.css */
+.advanced-search {
+    background-color: var(--accent-light);
+    padding: 15px;
+    border-radius: var(--round);
+    margin-top: 10px;
+}
+
+.form-group {
+    margin-bottom: 10px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-light);
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    background: var(--bg-color);
+    color: var(--text-light);
+    border-radius: 5px;
+}
+
+.checkbox-group {
+    display: flex;
+    gap: 10px;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+#advanced-btn {
+    padding: 10px 20px;
+    border: none;
+    background-color: var(--primary-blue);
+    color: var(--text-light);
+    border-radius: var(--round);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+#advanced-btn:hover {
+    background-color: var(--primary-dark);
+    transform: scale(1.05);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeScale {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
 }
 
 /* Responsive Adjustments */

@@ -1,10 +1,9 @@
-// In-memory storage for shortcuts
 let shortcutsConfig = { shortcuts: [] };
 let isEditMode = false;
 let isAddMode = false;
 let currentEditIndex = null;
+let dragStartIndex = null;
 
-// DOM elements cache
 const domElements = {
     clock: {
         hours: document.getElementById('digi-hours'),
@@ -13,8 +12,10 @@ const domElements = {
     },
     search: {
         input: document.getElementById('search-q'),
-        button: document.getElementById('search-btn')
+        button: document.getElementById('search-btn'),
+        advancedButton: document.getElementById('advanced-btn')
     },
+    advancedSearch: document.getElementById('advanced-search'),
     shortcuts: {
         container: document.getElementById('shortcuts-container'),
         addForm: document.querySelector('.add-shortcut'),
@@ -37,7 +38,6 @@ const domElements = {
     }
 };
 
-// Debug function to check DOM elements
 function checkDomElements() {
     console.log('Checking DOM elements:', {
         popup: domElements.edit.popup,
@@ -55,7 +55,6 @@ function checkDomElements() {
     if (!domElements.edit.cancelButton) console.error('Cancel button not found');
 }
 
-// Clock functionality
 function updateClock() {
     const now = new Date();
     const hours = now.getHours() % 12 || 12;
@@ -69,15 +68,36 @@ function updateClock() {
     }
 }
 
-// Search functionality
 function setupSearch() {
     const performSearch = () => {
-        const query = domElements.search.input?.value.trim();
+        const mainQuery = domElements.search.input?.value.trim();
+        let query = mainQuery;
+        let params = '';
+
+        if (domElements.advancedSearch && domElements.advancedSearch.style.display !== 'none') {
+            const allWords = document.getElementById('adv-all-words').value.trim();
+            const exactPhrase = document.getElementById('adv-exact-phrase').value.trim();
+            const anyWords = document.getElementById('adv-any-words').value.trim();
+            const noneWords = document.getElementById('adv-none-words').value.trim();
+            const fileTypes = Array.from(document.querySelectorAll('#advanced-search input[type="checkbox"]:checked')).map(cb => cb.value);
+            const dateRange = document.getElementById('adv-date-range').value;
+
+            if (allWords) query += ' ' + allWords.split(' ').join(' ');
+            if (exactPhrase) query += ' "' + exactPhrase + '"';
+            if (anyWords) {
+                const anyWordsArr = anyWords.split(' ');
+                query += anyWordsArr.length > 1 ? ' (' + anyWordsArr.join(' OR ') + ')' : ' ' + anyWords;
+            }
+            if (noneWords) query += ' -' + noneWords.split(' ').join(' -');
+            if (fileTypes.length > 0) query += ' (' + fileTypes.map(ft => 'filetype:' + ft).join(' OR ') + ')';
+            if (dateRange) params += '&tbs=qdr:' + dateRange;
+        }
+
         if (query) {
-            window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+            window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}${params}`, '_blank');
         }
     };
-    
+
     if (domElements.search.button) {
         domElements.search.button.addEventListener('click', performSearch);
     }
@@ -86,9 +106,19 @@ function setupSearch() {
             if (e.key === 'Enter') performSearch();
         });
     }
+    if (domElements.search.advancedButton) {
+        domElements.search.advancedButton.addEventListener('click', toggleAdvancedSearch);
+    }
 }
 
-// Render shortcuts to the UI
+function toggleAdvancedSearch() {
+    if (domElements.advancedSearch) {
+        const isVisible = domElements.advancedSearch.style.display !== 'none';
+        domElements.advancedSearch.style.display = isVisible ? 'none' : 'block';
+        domElements.search.advancedButton.textContent = isVisible ? 'Advanced' : 'Hide Advanced';
+    }
+}
+
 function renderShortcuts() {
     if (!domElements.shortcuts.container) {
         console.error('Shortcuts container not found');
@@ -99,17 +129,18 @@ function renderShortcuts() {
     shortcutsConfig.shortcuts.forEach((shortcut, index) => {
         const shortcutEl = document.createElement('div');
         shortcutEl.className = 'shortcut';
+        shortcutEl.setAttribute('draggable', 'true');
+        shortcutEl.dataset.index = index;
         shortcutEl.innerHTML = `
             <a href="${shortcut.url}" target="_blank">
                 <img src="https://www.google.com/s2/favicons?domain=${new URL(shortcut.url).hostname}&sz=64" alt="${shortcut.name}">
             </a>
             <span class="shortcut-name">${shortcut.name}</span>
-            ${isEditMode ? `<button class="delete-shortcut-btn" data-index="${index}">&times;</button>` : ''}
+            ${isEditMode ? `<button class="delete-shortcut-btn" data-index="${index}">×</button>` : ''}
         `;
         domElements.shortcuts.container.appendChild(shortcutEl);
     });
 
-    // Add event listeners for delete buttons if in edit mode
     if (isEditMode) {
         document.querySelectorAll('.delete-shortcut-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -119,15 +150,56 @@ function renderShortcuts() {
             });
         });
     }
+
+    const shortcutEls = domElements.shortcuts.container.querySelectorAll('.shortcut');
+    shortcutEls.forEach((shortcutEl, index) => {
+        shortcutEl.addEventListener('dragstart', (e) => {
+            dragStartIndex = index;
+            shortcutEl.classList.add('dragging');
+            e.dataTransfer.setData('text/plain', index);
+            const rect = shortcutEl.getBoundingClientRect();
+            const offsetX = e.clientX - rect.left;
+            const offsetY = e.clientY - rect.top;
+            e.dataTransfer.setDragImage(shortcutEl, offsetX, offsetY);
+        });
+
+        shortcutEl.addEventListener('dragend', () => {
+            shortcutEl.classList.remove('dragging');
+            chrome.storage.local.set({ shortcutsConfig }, () => {
+                console.log('Shortcuts order saved:', shortcutsConfig.shortcuts);
+            });
+        });
+
+        shortcutEl.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            const dragOverIndex = parseInt(shortcutEl.dataset.index);
+            if (dragStartIndex !== dragOverIndex) {
+                reorderShortcuts(dragStartIndex, dragOverIndex);
+                dragStartIndex = dragOverIndex;
+            }
+        });
+
+        shortcutEl.addEventListener('dragenter', (e) => {
+            e.preventDefault();
+        });
+
+        shortcutEl.addEventListener('drop', (e) => {
+            e.preventDefault();
+        });
+    });
 }
 
-// Load shortcuts from chrome.storage
+function reorderShortcuts(fromIndex, toIndex) {
+    const [movedShortcut] = shortcutsConfig.shortcuts.splice(fromIndex, 1);
+    shortcutsConfig.shortcuts.splice(toIndex, 0, movedShortcut);
+    renderShortcuts();
+}
+
 function loadShortcuts() {
     chrome.storage.local.get(['shortcutsConfig'], (result) => {
         if (result.shortcutsConfig) {
             shortcutsConfig = result.shortcutsConfig;
         } else {
-            // Default shortcuts if none exist
             shortcutsConfig = {
                 shortcuts: [
                     { name: "YouTube", url: "https://www.youtube.com/" },
@@ -144,7 +216,6 @@ function loadShortcuts() {
     });
 }
 
-// Add new shortcut
 function addShortcut() {
     const name = domElements.shortcuts.newName?.value.trim();
     let url = domElements.shortcuts.newUrl?.value.trim();
@@ -177,7 +248,6 @@ function addShortcut() {
     });
 }
 
-// Start editing a shortcut
 function startEditingShortcut(index) {
     if (index < 0 || index >= shortcutsConfig.shortcuts.length) {
         console.error('Invalid shortcut index:', index);
@@ -187,22 +257,17 @@ function startEditingShortcut(index) {
     currentEditIndex = index;
     const shortcut = shortcutsConfig.shortcuts[index];
 
-    // Populate and show popup
     if (domElements.edit.name && domElements.edit.url && domElements.edit.popup) {
         domElements.edit.name.value = shortcut.name;
         domElements.edit.url.value = shortcut.url;
         domElements.edit.popup.style.display = 'flex';
         console.log('Edit popup opened for:', shortcut);
-    } else {
-        console.error('Edit popup elements missing');
     }
     
-    // Disable other modes
     if (isAddMode) toggleAddMode();
     if (isEditMode) toggleEditMode();
 }
 
-// Save edited shortcut
 function saveEditedShortcut() {
     if (currentEditIndex === null || currentEditIndex < 0 || currentEditIndex >= shortcutsConfig.shortcuts.length) {
         console.error('Invalid edit index:', currentEditIndex);
@@ -237,7 +302,6 @@ function saveEditedShortcut() {
     });
 }
 
-// Delete a shortcut
 function deleteShortcut(index) {
     if (index === null || index < 0 || index >= shortcutsConfig.shortcuts.length) {
         console.error('Invalid edit index:', index);
@@ -251,7 +315,6 @@ function deleteShortcut(index) {
     });
 }
 
-// Cancel editing shortcut
 function cancelEditingShortcut() {
     currentEditIndex = null;
     if (domElements.edit.popup) {
@@ -263,7 +326,6 @@ function cancelEditingShortcut() {
     }
 }
 
-// Toggle edit mode
 function toggleEditMode() {
     isEditMode = !isEditMode;
     if (domElements.buttons.edit) {
@@ -272,7 +334,6 @@ function toggleEditMode() {
     renderShortcuts();
 }
 
-// Toggle add shortcut form visibility
 function toggleAddMode() {
     isAddMode = !isAddMode;
     if (domElements.shortcuts.addForm && domElements.buttons.new) {
@@ -281,78 +342,44 @@ function toggleAddMode() {
     }
 }
 
-// Initialize everything
 function init() {
-    // Debug DOM elements
     checkDomElements();
-    
-    // Start clock
     updateClock();
     setInterval(updateClock, 1000);
-    
-    // Setup search
     setupSearch();
-    
-    // Load initial shortcuts
     loadShortcuts();
     
-    // Setup shortcut buttons
     if (domElements.shortcuts.addButton) {
         domElements.shortcuts.addButton.addEventListener('click', addShortcut);
-    } else {
-        console.error('Add shortcut button not found');
-    }
-    
-    // Setup edit popup buttons
+    };
     if (domElements.edit.saveButton) {
         domElements.edit.saveButton.addEventListener('click', saveEditedShortcut);
-    } else {
-        console.error('Save shortcut button not found');
-    }
-    
+    };
     if (domElements.edit.deleteButton) {
         domElements.edit.deleteButton.addEventListener('click', deleteShortcut);
-    } else {
-        console.error('Delete shortcut button not found');
-    }
-    
+    };
     if (domElements.edit.cancelButton) {
         domElements.edit.cancelButton.addEventListener('click', cancelEditingShortcut);
-    } else {
-        console.error('Cancel shortcut button not found');
-    }
+    };
     
-    // Create and setup control buttons
     const buttonContainer = document.createElement('div');
     buttonContainer.className = 'button-container';
-    
-    // New button
     domElements.buttons.new = document.createElement('button');
     domElements.buttons.new.id = 'new-btn';
     domElements.buttons.new.textContent = 'New';
     domElements.buttons.new.addEventListener('click', toggleAddMode);
-    
-    // Edit button
     domElements.buttons.edit = document.createElement('button');
     domElements.buttons.edit.id = 'edit-btn';
     domElements.buttons.edit.textContent = 'Edit';
     domElements.buttons.edit.addEventListener('click', toggleEditMode);
-    
     buttonContainer.appendChild(domElements.buttons.new);
     buttonContainer.appendChild(domElements.buttons.edit);
     const rightHalf = document.querySelector('.right-half');
-    if (rightHalf) {
-        rightHalf.appendChild(buttonContainer);
-    } else {
-        console.error('Right half container not found');
-    }
+    if (rightHalf) rightHalf.appendChild(buttonContainer);
     
-    // Close popup when clicking outside
     if (domElements.edit.popup) {
         domElements.edit.popup.addEventListener('click', (e) => {
-            if (e.target === domElements.edit.popup) {
-                cancelEditingShortcut();
-            }
+            if (e.target === domElements.edit.popup) cancelEditingShortcut();
         });
     }
 }
