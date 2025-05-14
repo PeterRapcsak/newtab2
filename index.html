@@ -5,61 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New Tab</title>
     <link rel="stylesheet" href="style.css">
+
 </head>
 <body>
     <div class="top-section">
         <div class="left-half">
-        <div id="digital-clock">
-            <span id="digi-hours">00</span>
-            <span id="digi-colon">:</span>
-            <span id="digi-minutes">00</span>
-            <span id="am-pm">PM</span>
-        </div>
-        <div class="search-bar">
-            <input type="text" id="search-q" placeholder="Search">
-            <button id="search-btn">Search</button>
-            <button id="advanced-btn">Advanced</button>
-        </div>
-        <div class="advanced-search" id="advanced-search" style="display: none;">
-            <h3>Advanced Search</h3>
-            <div class="form-group">
-                <label>All these words:</label>
-                <input type="text" id="adv-all-words">
+            <div id="digital-clock">
+                <span id="digi-hours">00</span>
+                <span id="digi-colon">:</span>
+                <span id="digi-minutes">00</span>
+                <span id="am-pm">PM</span>
             </div>
-            <div class="form-group">
-                <label>Exact phrase:</label>
-                <input type="text" id="adv-exact-phrase">
+            <div class="search-bar">
+                <input type="text" id="search-q" placeholder="Search">
+                <button id="search-btn">Search</button>
+                <select id="search-engine-select" class="compact-select">
+                    <option value="google">Google</option>
+                    <option value="bing">Bing</option>
+                    <option value="duckduckgo">DuckDuckGo</option>
+                    <option value="brave">Brave</option>
+                    <option value="yandex">Yandex</option>
+                    <option value="startpage">Startpage</option>
+                    <option value="baidu">Baidu</option>
+
+                </select>
+                <input type="file" id="lens-input" accept="image/*" style="display:none">
             </div>
-            <div class="form-group">
-                <label>Any of these words:</label>
-                <input type="text" id="adv-any-words">
+            <div class="search-controls">
+                <button id="advanced-btn">Advanced</button>
+                
+                
             </div>
-            <div class="form-group">
-                <label>None of these words:</label>
-                <input type="text" id="adv-none-words">
-            </div>
-            <div class="form-group">
-                <label>File type:</label>
-                <div class="checkbox-group">
-                    <label><input type="checkbox" value="pdf"> PDF</label>
-                    <label><input type="checkbox" value="doc"> DOC</label>
-                    <label><input type="checkbox" value="xls"> XLS</label>
-                    <label><input type="checkbox" value="ppt"> PPT</label>
-                    <label><input type="checkbox" value="txt"> TXT</label>
+            <!-- Add to index.html -->
+            <div id="advanced-search" class="advanced-search" style="display: none;">
+                <div class="advanced-grid">
+                    <div class="advanced-group">
+                        <input type="text" id="adv-all-words" placeholder="All these words">
+                        <input type="text" id="adv-exact-phrase" placeholder="Exact phrase">
+                    </div>
+
+                    <div class="advanced-group">
+                        <input type="text" id="adv-any-words" placeholder="Any of these words">
+                        <input type="text" id="adv-none-words" placeholder="None of these words">
+                    </div>
+                
+                    <div class="advanced-row">
+                        <div class="file-types">
+                            <div class="compact-checkboxes">
+                                <label><input type="checkbox" value="pdf">PDF</label>
+                                <label><input type="checkbox" value="doc">DOC</label>
+                                <label><input type="checkbox" value="docx">DOCX</label>
+                                <label><input type="checkbox" value="xls">XLS</label>
+                                <label><input type="checkbox" value="xlsx">XLSX</label>
+                                <label><input type="checkbox" value="ppt">PPT</label>
+                                <label><input type="checkbox" value="pptx">PPTX</label>
+                                <label><input type="checkbox" value="txt">TXT</label>
+                                <label><input type="checkbox" value="html">HTML</label>
+                            </div>
+                        </div>
+
+                        <select id="adv-date-range" class="compact-select">
+                            <option value="">Any date</option>
+                            <option value="d">Last 24h</option>
+                            <option value="w">Last week</option>
+                            <option value="m">Last month</option>
+                            <option value="y">Last year</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label>Last update:</label>
-                <select id="adv-date-range">
-                    <option value="">Any time</option>
-                    <option value="d">Past 24 hours</option>
-                    <option value="w">Past week</option>
-                    <option value="m">Past month</option>
-                    <option value="y">Past year</option>
-                </select>
-            </div>
         </div>
-    </div>
         <div class="right-half">
             <div class="add-shortcut">
                 <input type="text" id="new-shortcut-name" placeholder="Name">
@@ -78,7 +93,6 @@
         </div>
     </div>
     
-</div>
     <div class="bottom-section">
         <div class="currency-exchanger">
             <div class="exchange-form">
@@ -92,53 +106,53 @@
         </div>
 
         <div class="ai-tools">
-            <a href="https://chat.openai.com/" class="ai-tool">
-                <img src="https://www.google.com/s2/favicons?domain=chat.openai.com&sz=32" alt="ChatGPT">
-                <span>ChatGPT</span>
-            </a>
-            <a href="https://grok.x.ai/" class="ai-tool">
-                <img src="https://www.google.com/s2/favicons?domain=grok.x.ai&sz=32" alt="Grok">
-                <span>Grok</span>
-            </a>
-            <a href="https://chat.deepseek.com/" class="ai-tool">
-                <img src="https://www.google.com/s2/favicons?domain=chat.deepseek.com&sz=32" alt="Deepseek">
-                <span>Deepseek</span>
-            </a>
-            <a href="https://gemini.google.com/app" class="ai-tool">
-                <img src="https://www.google.com/s2/favicons?domain=gemini.google.com/app&sz=32" alt="Gemini">
-                <span>Gemini</span>
-            </a>
-            <a href="https://www.blackbox.ai/" class="ai-tool">
-                <img src="https://www.google.com/s2/favicons?domain=www.blackbox.ai&sz=32" alt="blackbox">
-                <span>Blackbox</span>
-            </a>
+<a href="https://chat.openai.com/" class="ai-tool">
+    <img src="https://www.google.com/s2/favicons?domain=openai.com&sz=32" alt="ChatGPT">
+    <span>ChatGPT</span>
+</a>
+<a href="https://grok.x.ai/" class="ai-tool">
+    <img src="https://www.google.com/s2/favicons?domain=x.ai&sz=32" alt="Grok">
+    <span>Grok</span>
+</a>
+<a href="https://chat.deepseek.com/" class="ai-tool">
+    <img src="https://www.google.com/s2/favicons?domain=deepseek.com&sz=32" alt="Deepseek">
+    <span>Deepseek</span>
+</a>
+<a href="https://gemini.google.com/app" class="ai-tool">
+    <img src="https://www.google.com/s2/favicons?domain=google.com&sz=32" alt="Gemini">
+    <span>Gemini</span>
+</a>
+<a href="https://www.blackbox.ai/" class="ai-tool">
+    <img src="https://www.google.com/s2/favicons?domain=blackbox.ai&sz=32" alt="blackbox">
+    <span>Blackbox</span>
+</a>
         </div>
 
         <div class="lang-tools">
-            <a href="https://www.deepl.com/en/translator" class="ai-tool">
-                <img src="https://www.google.com/s2/favicons?domain=www.deepl.com/en/translator&sz=32" alt="deepl">
-                <span>DeepL</span>
-            </a>
-            <a href="https://quillbot.com/paraphrasing-tool" class="ai-tool">
-                <img src="https://www.google.com/s2/favicons?domain=quillbot.com/paraphrasing-tool&sz=32" alt="Quillbot">
-                <span>Quillbot</span>
-            </a>
+<a href="https://www.deepl.com/translator" class="ai-tool">
+    <img src="https://www.google.com/s2/favicons?domain=deepl.com&sz=32" alt="deepl">
+    <span>DeepL</span>
+</a>
+<a href="https://quillbot.com/" class="ai-tool">
+    <img src="https://www.google.com/s2/favicons?domain=quillbot.com&sz=32" alt="Quillbot">
+    <span>Quillbot</span>
+</a>
         </div>
-        
-        
 
-    <div id="edit-popup" class="edit-popup" style="display: none;">
-        <div class="edit-popup-content">
-            <h3>Edit Shortcut</h3>
-            <input type="text" id="edit-shortcut-name" placeholder="Name">
-            <input type="text" id="edit-shortcut-url" placeholder="URL">
-            <div class="edit-popup-buttons">
-                <button id="save-shortcut-btn">Save</button>
-                <button id="delete-shortcut-btn">Delete</button>
-                <button id="cancel-shortcut-btn">Cancel</button>
+        <div id="edit-popup" class="edit-popup" style="display: none;">
+            <div class="edit-popup-content">
+                <h3>Edit Shortcut</h3>
+                <input type="text" id="edit-shortcut-name" placeholder="Name">
+                <input type="text" id="edit-shortcut-url" placeholder="URL">
+                <div class="edit-popup-buttons">
+                    <button id="save-shortcut-btn">Save</button>
+                    <button id="delete-shortcut-btn">Delete</button>
+                    <button id="cancel-shortcut-btn">Cancel</button>
+                </div>
             </div>
         </div>
+        <script src="scripts/script.js"></script>
     </div>
-    <script src="scripts/script.js"></script>
+</div>
 </body>
 </html>

@@ -1,24 +1,25 @@
 {
 	"manifest_version": 3,
 	"name": "NewTab 2",
-	"version": "2.1",
+	"version": "2.2",
 	"description": "xd",
 	"permissions": ["search", "storage"],
 	"optional_permissions": ["bookmarks"],
 	"host_permissions": [
-		"https://www.google.com/complete/search?client=*",
-		"https://duckduckgo.com/ac/?q=*",
-		"https://search.brave.com/api/suggest?q=*",
-		"https://*.wikipedia.org/w/api.php?action=opensearch&search=*",
-		"https://api.frankfurter.app/*"
-	],
+        "https://www.google.com/complete/search?client=*",
+        "https://duckduckgo.com/ac/?q=*",
+        "https://search.brave.com/api/suggest?q=*",
+        "https://search.brave.com/*",
+        "https://*.wikipedia.org/w/api.php?action=opensearch&search=*",
+        "https://api.frankfurter.app/*"
+    ],
 	"icons": {
-		"16": "favicon/icon16.png",
-		"48": "favicon/icon48.png",
-		"128": "favicon/icon128.png"
+		"16":  	"favicon/icon16.png",
+		"32":  	"favicon/icon32.png",
+		"128": 	"favicon/icon128.png"
 	},
 	"action": {
-		"default_icon": "favicon/icon48.png"
+		"default_icon": "favicon/home32.png"
 	},
 	"chrome_url_overrides": {
 		"newtab": "index.html"

@@ -46,6 +46,37 @@ const domElements = {
     }
 };
 
+
+const lensBtn   = document.getElementById('lens-btn');
+const lensInput = document.getElementById('lens-input');
+const searchBar = document.querySelector('.search-bar');
+
+
+
+if (lensBtn) {
+  lensBtn.addEventListener('click', () => {
+    window.open('https://www.bing.com/visualsearch', '_blank');
+  });
+}
+
+if (searchBar) {
+  searchBar.addEventListener('dragover', e => {
+    e.preventDefault();
+    searchBar.classList.add('drag-over');
+  });
+
+  searchBar.addEventListener('dragleave', e => {
+    searchBar.classList.remove('drag-over');
+  });
+
+  searchBar.addEventListener('drop', e => {
+    e.preventDefault();
+    searchBar.classList.remove('drag-over');
+    window.open('https://www.bing.com/visualsearch', '_blank');
+  });
+}
+
+
 // Fetch and populate currency dropdowns, load saved preferences
 async function loadCurrencies() {
     try {
@@ -86,7 +117,6 @@ async function loadCurrencies() {
         console.error('Error fetching currencies:', error);
     }
 }
-
 
 // Perform currency conversion
 async function convertCurrency() {
@@ -191,6 +221,7 @@ function setupSearch() {
         let query = mainQuery;
         let params = '';
 
+        // Apply advanced search options for all engines if visible
         if (domElements.advancedSearch && domElements.advancedSearch.style.display !== 'none') {
             const allWords = document.getElementById('adv-all-words').value.trim();
             const exactPhrase = document.getElementById('adv-exact-phrase').value.trim();
@@ -207,11 +238,18 @@ function setupSearch() {
             }
             if (noneWords) query += ' -' + noneWords.split(' ').join(' -');
             if (fileTypes.length > 0) query += ' (' + fileTypes.map(ft => 'filetype:' + ft).join(' OR ') + ')';
-            if (dateRange) params += '&tbs=qdr:' + dateRange;
+            if (dateRange && selectedEngine === 'google') params += '&tbs=qdr:' + dateRange;
         }
 
         if (query) {
-            window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}${params}`, '_blank');
+            const engine = searchEngines.find(e => e.id === selectedEngine);
+            if (engine) {
+                let searchUrl = `${engine.url}${encodeURIComponent(query)}`;
+                if (selectedEngine === 'google' && params) {
+                    searchUrl += params;
+                }
+                window.open(searchUrl, '_blank');
+            }
         }
     };
 
@@ -248,13 +286,19 @@ function renderShortcuts() {
         shortcutEl.className = 'shortcut';
         shortcutEl.setAttribute('draggable', 'true');
         shortcutEl.dataset.index = index;
+        
+        // Extract main domain for favicon
+        const hostname = new URL(shortcut.url).hostname;
+        const domainParts = hostname.split('.');
+        const mainDomain = domainParts.length > 2 ? domainParts.slice(-2).join('.') : hostname;
+
         shortcutEl.innerHTML = `
         <a href="${shortcut.url}">
-            <img src="https://www.google.com/s2/favicons?domain=${new URL(shortcut.url).hostname}&sz=64" alt="${shortcut.name}">
+            <img src="https://www.google.com/s2/favicons?domain=${mainDomain}&sz=64" alt="${shortcut.name}">
         </a>
         <span class="shortcut-name">${shortcut.name}</span>
         ${isEditMode ? `<button class="delete-shortcut-btn" data-index="${index}">×</button>` : ''}
-    `;
+        `;
         domElements.shortcuts.container.appendChild(shortcutEl);
     });
 
@@ -460,6 +504,7 @@ function toggleAddMode() {
 }
 
 
+
 async function fetchNewsHeadlines() {
     try {
         // Using Bloomberg's free RSS feed
@@ -498,7 +543,25 @@ async function fetchNewsHeadlines() {
     }
 }
 
+const searchEngines = [
+    { id: 'google', name: 'Google', url: 'https://www.google.com/search?q=', icon: 'https://www.google.com/favicon.ico' },
+    { id: 'bing', name: 'Bing', url: 'https://www.bing.com/search?q=', icon: 'https://www.bing.com/favicon.ico' },
+    { id: 'duckduckgo', name: 'DuckDuckGo', url: 'https://duckduckgo.com/?q=', icon: 'https://duckduckgo.com/favicon.ico' },
+    { id: 'brave', name: 'Brave', url: 'https://search.brave.com/search?q=', icon: 'https://search.brave.com/favicon.ico' },
+    { id: 'yandex', name: 'Yandex', url: 'https://yandex.com/search/?text=', icon: 'https://yandex.com/favicon.ico' },
+    { id: 'startpage', name: 'Startpage', url: 'https://startpage.com/do/dsearch?query=', icon: 'https://startpage.com/favicon.ico' },
+    { id: 'baidu', name: 'Baidu', url: 'https://www.baidu.com/s?wd=', icon: 'https://www.baidu.com/favicon.ico' }
+];
+let selectedEngine = 'google';
 
+
+function initializeEngineSettings() {
+    const engineSelect = document.getElementById('search-engine-select');
+    engineSelect.value = selectedEngine;  // Set default selected engine
+    engineSelect.addEventListener('change', (e) => {
+        selectedEngine = e.target.value;
+    });
+}
 
 function init() {
     checkDomElements();
@@ -507,6 +570,7 @@ function init() {
     setupSearch();
     loadShortcuts();
     loadCurrencies();
+    initializeEngineSettings();
 
     if (domElements.currency.convertButton) {
         domElements.currency.convertButton.addEventListener('click', convertCurrency);
@@ -516,16 +580,16 @@ function init() {
     }
     if (domElements.shortcuts.addButton) {
         domElements.shortcuts.addButton.addEventListener('click', addShortcut);
-    };
+    }
     if (domElements.edit.saveButton) {
         domElements.edit.saveButton.addEventListener('click', saveEditedShortcut);
-    };
+    }
     if (domElements.edit.deleteButton) {
         domElements.edit.deleteButton.addEventListener('click', deleteShortcut);
-    };
+    }
     if (domElements.edit.cancelButton) {
         domElements.edit.cancelButton.addEventListener('click', cancelEditingShortcut);
-    };
+    }
     
     const buttonContainer = document.createElement('div');
     buttonContainer.className = 'button-container';
@@ -547,6 +611,18 @@ function init() {
             if (e.target === domElements.edit.popup) cancelEditingShortcut();
         });
     }
+
+    if (domElements.search.advancedButton) {
+        domElements.search.advancedButton.addEventListener('click', toggleAdvancedSearch);
+    }
+    
+    const engineSelect = document.getElementById('search-engine-select');
+    engineSelect.addEventListener('change', (e) => {
+        selectedEngine = e.target.value;
+    });
+
+
+    initializeEngineSettings();
 }
 
 document.addEventListener('DOMContentLoaded', init);

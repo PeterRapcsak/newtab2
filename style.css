@@ -1,5 +1,5 @@
-/* Modernized NewTab Styles */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
 * {
     margin: 0;
@@ -9,16 +9,22 @@
 }
 
 :root {
-    --bg-color: #1E2A44; /* Dark modern background */
-    --accent-light: #2A3A66; /* Light accent for cards */
-    --primary-blue: #3B82F6; /* Vibrant primary action color */
-    --primary-dark: #2563EB; /* Darker hover state */
-    --neutral-gray: #4B5EAA; /* Neutral secondary elements */
-    --text-light: #F5F7FA; /* Soft white for text */
-    --gap: 20px;
-    --round: 20px; /* Maintain boxy style */
-    --shortcut-size: 70px; /* Consistent shortcut size */
-    --transition: all 0.3s ease; /* Smooth transitions */
+    --bg-color: #1a1a1a;
+    --accent-light: #2a2a2a;
+    --primary-blue: #3a3a3a;
+    --primary-dark: #333333;
+    --neutral-gray: #969696;
+    --text-light: #e0e0e0;
+    --text-dark: #b0b0b0;
+    --button-bg: #333333;
+    --button-hover: #4a4a4a;
+    --button-text: #ffffff;
+    --focus-color: #5a5a5a;
+    --gap: 24px;
+    --round: 12px;
+    --shortcut-size: 80px;
+    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 body {
@@ -47,7 +53,6 @@ body {
     flex-direction: column;
     gap: var(--gap);
 }
-
 /* Digital Clock */
 #digital-clock {
     background-color: var(--accent-light);
@@ -70,7 +75,7 @@ body {
 
 #digi-colon,
 #am-pm {
-    color: var(--primary-blue);
+    color: var(--text-light);
     margin: 0 5px;
 }
 
@@ -78,6 +83,31 @@ body {
     font-size: 1.5rem;
     vertical-align: middle;
 }
+
+/* style.css, near your .search-bar rules */
+#bing-visual-search-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+}
+#lbing-visual-search-btn:hover img {
+  transform: scale(1.1);
+}
+#bing-visual-search-btn img {
+  transition: transform 0.2s;
+}
+
+/* Glow effect when dragging an image over the search bar */
+.search-bar.drag-over {
+    outline: 2px dashed #4285f4;
+    box-shadow: 0 0 10px 3px rgba(66, 133, 244, 0.6);
+    border-radius: 6px;
+    transition: box-shadow 0.2s, outline 0.2s;
+}
+
 
 /* Search Bar */
 .search-bar {
@@ -110,21 +140,21 @@ body {
 #search-btn {
     padding: 10px 20px;
     border: none;
-    background-color: var(--primary-blue);
-    color: var(--text-light);
+    background-color: var(--button-bg);
+    color: var(--button-text);
     border-radius: var(--round);
     cursor: pointer;
     transition: var(--transition);
 }
 
 #search-btn:hover {
-    background-color: var(--primary-dark);
+    background-color: var(--button-hover);
     transform: scale(1.05);
 }
 
 /* Add Shortcut Section */
 .add-shortcut {
-    display: none; /* Hidden by default */
+    display: none;
     gap: 10px;
     background: var(--accent-light);
     padding: 10px;
@@ -151,11 +181,11 @@ body {
 }
 
 #new-shortcut-name {
-    flex: 1; /* Smaller proportion for name */
+    flex: 1;
 }
 
 #new-shortcut-url {
-    flex: 7; /* Larger proportion for URL */
+    flex: 7;
 }
 
 #new-shortcut-name::placeholder,
@@ -166,15 +196,15 @@ body {
 #add-shortcut-btn {
     padding: 10px 20px;
     border: none;
-    background-color: var(--primary-blue);
-    color: var(--text-light);
+    background-color: var(--button-bg);
+    color: var(--button-text);
     border-radius: var(--round);
     cursor: pointer;
     transition: var(--transition);
 }
 
 #add-shortcut-btn:hover {
-    background-color: var(--primary-dark);
+    background-color: var(--button-hover);
     transform: scale(1.05);
 }
 
@@ -245,11 +275,11 @@ body {
 }
 
 #save-shortcut-btn {
-    background-color: var(--primary-blue);
+    background-color: var(--button-bg);
 }
 
 #save-shortcut-btn:hover {
-    background-color: var(--primary-dark);
+    background-color: var(--button-hover);
     transform: scale(1.05);
 }
 
@@ -283,8 +313,8 @@ body {
 #new-btn {
     padding: 10px 20px;
     border: none;
-    background-color: var(--primary-blue);
-    color: var(--text-light);
+    background-color: var(--button-bg);
+    color: var(--button-text);
     border-radius: var(--round);
     cursor: pointer;
     font-size: 1rem;
@@ -293,7 +323,7 @@ body {
 
 #edit-btn:hover,
 #new-btn:hover {
-    background-color: var(--primary-dark);
+    background-color: var(--button-hover);
     transform: scale(1.05);
 }
 
@@ -317,7 +347,7 @@ body {
     position: relative;
     animation: fadeScale 0.5s ease-out;
     animation-fill-mode: forwards;
-    cursor: move; /* Indicate draggable */
+    cursor: move;
 }
 
 .shortcut.dragging {
@@ -329,7 +359,7 @@ body {
     display: block;
     width: var(--shortcut-size);
     height: var(--shortcut-size);
-    background-color: var(--primary-blue);
+    background-color: var(--button-bg);
     padding: 10px;
     border-radius: 10px;
     transition: var(--transition);
@@ -375,7 +405,7 @@ body {
 }
 
 .lang-tools {
-    transition: var(--transition); /* Add transition */
+    transition: var(--transition);
 }
 
 .lang-tools {
@@ -392,13 +422,12 @@ body {
     flex-wrap: wrap;
     gap: 15px;
     padding: 15px;
-    min-width: auto; /* Remove fixed min-width */
-    max-width: 100%; /* Allow flexibility */
-    white-space: nowrap; /* Prevent text wrapping */
-    flex-shrink: 0; /* Prevent shrinking */
-    padding: 10px 15px; /* Adjust padding for text length */
+    min-width: auto;
+    max-width: 100%;
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 10px 15px;
 }
-
 
 .ai-tool {
     display: inline-flex;
@@ -426,6 +455,10 @@ body {
 .ai-tool span {
     font-size: 1rem;
 }
+
+
+
+
 
 /* Add to the bottom of style.css */
 .advanced-search {
@@ -468,15 +501,15 @@ body {
 #advanced-btn {
     padding: 10px 20px;
     border: none;
-    background-color: var(--primary-blue);
-    color: var(--text-light);
+    background-color: var(--button-bg);
+    color: var(--button-text);
     border-radius: var(--round);
     cursor: pointer;
     transition: var(--transition);
 }
 
 #advanced-btn:hover {
-    background-color: var(--primary-dark);
+    background-color: var(--button-hover);
     transform: scale(1.05);
 }
 
@@ -512,10 +545,6 @@ body {
     transition: var(--transition);
 }
 
-.lang-tools {
-    transition: var(--transition); /* Add transition */
-}
-
 .currency-exchanger:hover,
 .lang-tools:hover,
 .ai-tools:hover {
@@ -523,10 +552,9 @@ body {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-
 .currency-exchanger {
-    flex: 0 0 350px; /* Fixed width, adjust as needed */
-    margin-top: 0; /* Remove previous margin */
+    flex: 0 0 350px;
+    margin-top: 0;
 }
 
 .lang-tools {
@@ -547,13 +575,12 @@ body {
     gap: 15px;
 }
 
-
 .exchange-form input,
 .exchange-form select,
 .exchange-form button {
     padding: 10px;
     border: none;
-    background: var(--bg-color);
+    background: var(--primary-blue);
     color: var(--text-light);
     border-radius: 5px;
 }
@@ -567,13 +594,13 @@ body {
 }
 
 .exchange-form button {
-    background-color: var(--primary-blue);
+    background-color: var(--button-bg);
     cursor: pointer;
     transition: var(--transition);
 }
 
 .exchange-form button:hover {
-    background-color: var(--primary-dark);
+    background-color: var(--button-hover);
     transform: scale(1.05);
 }
 
@@ -594,15 +621,105 @@ body {
     color: var(--text-light);
 }
 
+/* Add to style.css */
+.advanced-search {
+    background-color: var(--accent-light);
+    padding: 15px;
+    border-radius: var(--round);
+    margin-top: 10px;
+}
 
+.advanced-grid {
+    display: grid;
+    gap: 12px;
+}
 
+.advanced-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.advanced-row {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.compact-checkboxes {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.compact-checkboxes label {
+    background: var(--bg-color);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.compact-checkboxes input[type="checkbox"] {
+    margin: 0;
+}
+
+.file-types {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-grow: 1;
+}
+
+.compact-select {
+    padding: 8px 12px;
+    border: none;
+    background: var(--bg-color);
+    color: var(--text-light);
+    border-radius: 20px;
+    font-size: 0.9rem;
+    min-width: 140px;
+}
+
+#adv-all-words,
+#adv-exact-phrase,
+#adv-any-words,
+#adv-none-words {
+    width: 100%;
+    padding: 8px 12px;
+    border: none;
+    background: var(--bg-color);
+    color: var(--text-light);
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+#adv-all-words::placeholder,
+#adv-exact-phrase::placeholder,
+#adv-any-words::placeholder,
+#adv-none-words::placeholder {
+    color: var(--neutral-gray);
+}
+
+/* Section Icons */
+.section-icon {
+    display: none;
+    font-size: 2rem;
+    text-align: center;
+    padding: 10px;
+}
 
 /* Animations */
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
 }
-
 
 @keyframes slideUp {
     from { transform: translateY(10px); opacity: 0; }
@@ -620,7 +737,8 @@ body {
 }
 
 /* Responsive Adjustments */
-@media screen and (max-width: 945px) {
+/* For screens smaller than 992px (e.g., tablets) */
+@media screen and (max-width: 992px) {
     .top-section {
         flex-direction: column;
     }
@@ -631,15 +749,74 @@ body {
     }
 }
 
-@media (max-width: 768px) {
-    .bottom-section {
+/* For screens smaller than 768px (e.g., mobile devices) */
+@media (max-width: 992px) {
+
+    .top-section {
         flex-direction: column;
-        align-items: stretch;
+        gap: 10px;
     }
 
-    .currency-exchanger,
-    .ai-tools {
-        flex: none;
+    .left-half {
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+    }
+
+    #digital-clock {
+        min-width: 230px;
+    }
+
+    #advanced-btn,
+    .advanced-search {
+        display: none;
+    }
+
+
+    .right-half {
         width: 100%;
+        gap: 10px;
+    }
+
+    .bottom-section {
+        display: none;
+    }
+}
+
+/* For very small screens (e.g., mobile phones) */
+@media (max-width: 576px) {
+    body {
+        padding: 10px;
+    }
+
+    .top-section {
+        gap: 10px;
+    }
+
+    .search-bar {
+        flex-direction: column;
+        min-width: 500px;
+    }
+
+    .search-bar input,
+    .search-bar button {
+        width: 100%;
+    }
+
+    .add-shortcut {
+        flex-direction: column;
+    }
+
+    .add-shortcut input,
+    .add-shortcut button {
+        width: 100%;
+    }
+
+    .edit-popup-content {
+        width: 95%;
+    }
+
+    .shortcuts-container {
+        justify-content: center;
     }
 }
