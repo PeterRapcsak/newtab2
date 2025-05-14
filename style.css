@@ -53,6 +53,8 @@ body {
     flex-direction: column;
     gap: var(--gap);
 }
+
+
 /* Digital Clock */
 #digital-clock {
     background-color: var(--accent-light);

@@ -604,7 +604,10 @@ function init() {
     buttonContainer.appendChild(domElements.buttons.new);
     buttonContainer.appendChild(domElements.buttons.edit);
     const rightHalf = document.querySelector('.right-half');
-    if (rightHalf) rightHalf.appendChild(buttonContainer);
+    if (rightHalf) {
+    const addShortcutDiv = rightHalf.querySelector('.add-shortcut');
+    rightHalf.insertBefore(buttonContainer, addShortcutDiv);
+    }
     
     if (domElements.edit.popup) {
         domElements.edit.popup.addEventListener('click', (e) => {
