@@ -4,6 +4,254 @@ let isAddMode = false;
 let currentEditIndex = null;
 let dragStartIndex = null;
 
+// Stopwatch Class
+class Stopwatch {
+  constructor(displayElement) {
+    this.display = displayElement;
+    this.running = false;
+    this.time = 0; // Time in milliseconds
+    this.interval = null;
+    this.updateDisplay(); // Initialize display to "0.00" on load
+  }
+
+  startStop() {
+    if (this.running) {
+      this.stop();
+    } else {
+      this.start();
+    }
+  }
+
+  start() {
+    if (!this.running) {
+      this.running = true;
+      this.display.contentEditable = false;
+      this.display.classList.add('running');
+      const startTime = Date.now() - this.time;
+      this.interval = setInterval(() => {
+        this.time = Date.now() - startTime;
+        this.updateDisplay();
+      }, 10);
+    }
+  }
+
+  stop() {
+    if (this.running) {
+      clearInterval(this.interval);
+      this.running = false;
+      this.display.contentEditable = true;
+      this.display.classList.remove('running');
+      
+      // Update this.time to reflect the current displayed time
+      const timeStr = this.getTimeString().replace(/:/g, '');
+      this.time = parseInt(timeStr.slice(0, 2)) * 3600000 + // hours to ms
+                  parseInt(timeStr.slice(2, 4)) * 60000 +    // minutes to ms
+                  parseInt(timeStr.slice(4, 6)) * 1000 +      // seconds to ms
+                  parseInt(timeStr.slice(7)) * 10;            // hundredths to ms
+    }
+  }
+
+
+  reset() {
+    this.stop();
+    this.time = 0;
+    this.updateDisplay();
+  }
+
+updateDisplay() {
+    const hours = Math.floor(this.time / 3600000);
+    const minutes = Math.floor((this.time % 3600000) / 60000);
+    const seconds = Math.floor((this.time % 60000) / 1000);
+    const hundredths = Math.floor((this.time % 1000) / 10);
+
+    let formatted;
+    if (hours > 0) {
+        formatted = `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(hundredths).padStart(2, '0')}`;
+    } else if (minutes > 0) {
+        formatted = `${minutes}:${String(seconds).padStart(2, '0')}.${String(hundredths).padStart(2, '0')}`;
+    } else {
+        formatted = `${seconds}.${String(hundredths).padStart(2, '0')}`;
+    }
+
+    let displayHTML = '';
+    for (const char of formatted) {
+        if (/\d/.test(char)) {
+            displayHTML += `<span class="digit">${char}</span>`;
+        } else {
+            displayHTML += char; // Add separators (":" or ".") without spans
+        }
+    }
+    this.display.innerHTML = displayHTML;
+}}
+
+
+
+
+class Timer {
+  constructor(displayElement) {
+    this.display = displayElement;
+    this.time = '000000'; // Initial time as 00:00:00
+    this.running = false;
+    this.remainingTime = 0;
+    this.interval = null;
+    this.initializeInput();
+    this.updateDisplay(this.time); // Initialize with 00:00:00
+  }
+  
+  initializeInput() {
+    this.display.addEventListener('keydown', (e) => {
+      // Prevent default behavior for all keys
+      e.preventDefault();
+
+      // Allow digits (0-9)
+      if (/\d/.test(e.key)) {
+        this.handleDigitInput(e.key);
+      }
+      // Allow backspace
+      else if (e.key === 'Backspace') {
+        this.handleBackspace();
+      }
+      // Explicitly block function keys (redundant but ensures clarity)
+      else if (e.key.startsWith('F') && e.key.length > 1) {
+        // Do nothing; default is already prevented
+      }
+      // All other keys (e.g., arrows, function keys) are ignored due to preventDefault
+    });
+  }
+
+  handleDigitInput(digit) {
+    this.time = this.time.slice(1) + digit;
+    this.updateDisplay(this.time);
+  }
+
+  handleBackspace() {
+    this.time = this.time.slice(0, -1) + '0';
+    this.updateDisplay(this.time);
+  }
+
+  getTimeString() {
+    return Array.from(this.display.querySelectorAll('.digit'))
+      .map(digit => digit.textContent)
+      .join('')
+      .replace(/:/g, '');
+  }
+
+  updateDisplay(input = '000000') {
+    const padded = input.padStart(6, '0');
+    this.time = padded; // Ensure this.time matches the display
+    const hours = padded.slice(0, 2);
+    const minutes = padded.slice(2, 4);
+    const seconds = padded.slice(4, 6);
+    
+    this.display.innerHTML = `
+      <span class="digit">${hours}</span>:
+      <span class="digit">${minutes}</span>:
+      <span class="digit">${seconds}</span>
+    `;
+    
+    this.remainingTime = 
+      (parseInt(hours) * 3600) + 
+      (parseInt(minutes) * 60) + 
+      parseInt(seconds);
+  }
+
+  startStop() {
+    if (this.running) {
+      this.stop();
+    } else {
+      this.start();
+    }
+  }
+
+
+  start() {
+    if (this.remainingTime > 0 && !this.running) {
+      this.running = true;
+      this.display.contentEditable = false;
+      this.display.classList.add('running');
+      
+      this.interval = setInterval(() => {
+        if (--this.remainingTime <= 0) {
+          this.stop();
+          this.remainingTime = 0;
+          this.display.classList.add('finished');
+        }
+        
+        const hours = Math.floor(this.remainingTime / 3600);
+        const minutes = Math.floor((this.remainingTime % 3600) / 60);
+        const seconds = this.remainingTime % 60;
+        
+        this.display.innerHTML = `
+          <span class="digit">${String(hours).padStart(2, '0')}</span>:
+          <span class="digit">${String(minutes).padStart(2, '0')}</span>:
+          <span class="digit">${String(seconds).padStart(2, '0')}</span>
+        `;
+      }, 1000);
+    }
+  }
+
+  stop() {
+    if (this.running) {
+      clearInterval(this.interval);
+      this.running = false;
+    }
+    this.display.contentEditable = true;
+    this.display.classList.remove('running', 'finished');
+    
+    // Set this.time to match the current remaining time
+    const hours = Math.floor(this.remainingTime / 3600);
+    const minutes = Math.floor((this.remainingTime % 3600) / 60);
+    const seconds = this.remainingTime % 60;
+    this.time = `${String(hours).padStart(2, '0')}${String(minutes).padStart(2, '0')}${String(seconds).padStart(2, '0')}`;
+  }
+
+  reset() {
+    this.stop();
+    this.remainingTime = 0;
+    this.updateDisplay('000000'); // Sets this.time to '000000' and display to 00:00:00
+    this.display.classList.remove('finished');
+  }
+}
+
+// Initialize Time Tools
+function initializeTimeTools() {
+  // Stopwatch
+  const stopwatchDisplay = document.querySelector('.stopwatch .display');
+  const stopwatch = new Stopwatch(stopwatchDisplay);
+  document.querySelector('.stopwatch .start-stop').addEventListener('click', () => {
+    stopwatch.startStop();
+  });
+  document.querySelector('.stopwatch .reset').addEventListener('click', () => {
+    stopwatch.reset();
+  });
+
+  // Timer
+  const timerDisplay = document.querySelector('.timer .display');
+  const timer = new Timer(timerDisplay);
+  document.querySelector('.timer .start-stop').addEventListener('click', () => {
+    timer.startStop();
+  });
+  document.querySelector('.timer .reset').addEventListener('click', () => {
+    timer.reset();
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const domElements = {
     clock: {
         hours: document.getElementById('digi-hours'),
@@ -14,7 +262,6 @@ const domElements = {
         fromSelect: document.getElementById('from-currency'),
         toSelect: document.getElementById('to-currency'),
         amountInput: document.getElementById('amount'),
-        convertButton: document.getElementById('convert-btn'),
         swapButton: document.getElementById('swap-btn'),
         resultDiv: document.getElementById('result')
     },
@@ -46,38 +293,34 @@ const domElements = {
     }
 };
 
-
-const lensBtn   = document.getElementById('lens-btn');
+const lensBtn = document.getElementById('lens-btn');
 const lensInput = document.getElementById('lens-input');
 const searchBar = document.querySelector('.search-bar');
 
-
-
 if (lensBtn) {
-  lensBtn.addEventListener('click', () => {
-    window.open('https://www.bing.com/visualsearch', '_blank');
-  });
+    lensBtn.addEventListener('click', () => {
+        window.open('https://www.bing.com/visualsearch', '_blank');
+    });
 }
 
 if (searchBar) {
-  searchBar.addEventListener('dragover', e => {
-    e.preventDefault();
-    searchBar.classList.add('drag-over');
-  });
+    searchBar.addEventListener('dragover', e => {
+        e.preventDefault();
+        searchBar.classList.add('drag-over');
+    });
 
-  searchBar.addEventListener('dragleave', e => {
-    searchBar.classList.remove('drag-over');
-  });
+    searchBar.addEventListener('dragleave', e => {
+        searchBar.classList.remove('drag-over');
+    });
 
-  searchBar.addEventListener('drop', e => {
-    e.preventDefault();
-    searchBar.classList.remove('drag-over');
-    window.open('https://www.bing.com/visualsearch', '_blank');
-  });
+    searchBar.addEventListener('drop', e => {
+        e.preventDefault();
+        searchBar.classList.remove('drag-over');
+        window.open('https://www.bing.com/visualsearch', '_blank');
+    });
 }
 
-
-// Fetch and populate currency dropdowns, load saved preferences
+// Fetch and populate currency dropdowns
 async function loadCurrencies() {
     try {
         const response = await fetch('https://api.frankfurter.app/currencies');
@@ -97,17 +340,9 @@ async function loadCurrencies() {
                 domElements.currency.toSelect.appendChild(option2);
             });
             
-            // Always default to EUR → HUF
             domElements.currency.fromSelect.value = 'EUR';
             domElements.currency.toSelect.value = 'HUF';
-            
-            // Save default preferences
-            chrome.storage.local.set({
-                fromCurrency: 'EUR',
-                toCurrency: 'HUF'
-            });
 
-            // Automatically perform conversion when page loads
             if (domElements.currency.amountInput) {
                 domElements.currency.amountInput.value = '1';
                 convertCurrency();
@@ -125,7 +360,7 @@ async function convertCurrency() {
     const amount = parseFloat(domElements.currency.amountInput?.value);
 
     if (!from || !to || isNaN(amount) || amount <= 0) {
-        domElements.currency.resultDiv.textContent = 'Please enter a valid amount and select currencies.';
+        domElements.currency.resultDiv.textContent = '';
         return;
     }
 
@@ -135,7 +370,6 @@ async function convertCurrency() {
         const rate = data.rates[to];
         const result = amount * rate;
 
-        // Hungarian number formatters (space as thousand separator)
         const numberFormatter = new Intl.NumberFormat('hu-HU', {
             minimumFractionDigits: 0,
             maximumFractionDigits: 2,
@@ -149,28 +383,13 @@ async function convertCurrency() {
             maximumFractionDigits: 2
         });
 
-        // Format both the input amount and the result
-        const formattedAmount = numberFormatter.format(amount);
         const formattedResult = currencyFormatter.format(result);
 
-        domElements.currency.resultDiv.textContent = `${formattedAmount} ${from} = ${formattedResult}`;
+        domElements.currency.resultDiv.textContent = `${formattedResult}`;
     } catch (error) {
         console.error('Error fetching exchange rate:', error);
         domElements.currency.resultDiv.textContent = 'Error fetching exchange rate. Please try again later.';
     }
-}
-
-function handleShortcutClick(event) {
-    // Middle mouse button (button 1) or ctrl/cmd+click
-    if (event.button === 1 || event.ctrlKey || event.metaKey) {
-        // Open in new tab (default browser behavior)
-        return true;
-    }
-    
-    // Regular click - open in current tab
-    event.preventDefault();
-    window.location.href = event.currentTarget.href;
-    return false;
 }
 
 // Swap the selected currencies
@@ -179,10 +398,28 @@ function swapCurrencies() {
     const to = domElements.currency.toSelect?.value;
     domElements.currency.fromSelect.value = to;
     domElements.currency.toSelect.value = from;
-    chrome.storage.local.set({
-        fromCurrency: to,
-        toCurrency: from
+    convertCurrency();
+}
+
+// Add automatic conversion with debounce
+if (domElements.currency.amountInput) {
+    let debounceTimer;
+    domElements.currency.amountInput.addEventListener('input', () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            convertCurrency();
+        }, 100); // 300ms debounce delay
     });
+}
+
+function handleShortcutClick(event) {
+    if (event.button === 1 || event.ctrlKey || event.metaKey) {
+        return true;
+    }
+    
+    event.preventDefault();
+    window.location.href = event.currentTarget.href;
+    return false;
 }
 
 function checkDomElements() {
@@ -221,7 +458,6 @@ function setupSearch() {
         let query = mainQuery;
         let params = '';
 
-        // Apply advanced search options for all engines if visible
         if (domElements.advancedSearch && domElements.advancedSearch.style.display !== 'none') {
             const allWords = document.getElementById('adv-all-words').value.trim();
             const exactPhrase = document.getElementById('adv-exact-phrase').value.trim();
@@ -287,7 +523,6 @@ function renderShortcuts() {
         shortcutEl.setAttribute('draggable', 'true');
         shortcutEl.dataset.index = index;
         
-        // Extract main domain for favicon
         const hostname = new URL(shortcut.url).hostname;
         const domainParts = hostname.split('.');
         const mainDomain = domainParts.length > 2 ? domainParts.slice(-2).join('.') : hostname;
@@ -326,9 +561,8 @@ function renderShortcuts() {
 
         shortcutEl.addEventListener('dragend', () => {
             shortcutEl.classList.remove('dragging');
-            chrome.storage.local.set({ shortcutsConfig }, () => {
-                console.log('Shortcuts order saved:', shortcutsConfig.shortcuts);
-            });
+            localStorage.setItem('shortcutsConfig', JSON.stringify(shortcutsConfig));
+            console.log('Shortcuts order saved:', shortcutsConfig.shortcuts);
         });
 
         shortcutEl.addEventListener('dragover', (e) => {
@@ -357,24 +591,22 @@ function reorderShortcuts(fromIndex, toIndex) {
 }
 
 function loadShortcuts() {
-    chrome.storage.local.get(['shortcutsConfig'], (result) => {
-        if (result.shortcutsConfig) {
-            shortcutsConfig = result.shortcutsConfig;
-        } else {
-            shortcutsConfig = {
-                shortcuts: [
-                    { name: "YouTube", url: "https://www.youtube.com/" },
-                    { name: "Google", url: "https://www.google.com" },
-                    { name: "GitHub", url: "https://github.com" },
-                    { name: "DeepSeek", url: "https://chat.deepseek.com/" }
-                ]
-            };
-            chrome.storage.local.set({ shortcutsConfig }, () => {
-                console.log('Default shortcuts saved');
-            });
-        }
-        renderShortcuts();
-    });
+    const storedConfig = localStorage.getItem('shortcutsConfig');
+    if (storedConfig) {
+        shortcutsConfig = JSON.parse(storedConfig);
+    } else {
+        shortcutsConfig = {
+            shortcuts: [
+                { name: "YouTube", url: "https://www.youtube.com/" },
+                { name: "Google", url: "https://www.google.com" },
+                { name: "GitHub", url: "https://github.com" },
+                { name: "DeepSeek", url: "https://chat.deepseek.com/" }
+            ]
+        };
+        localStorage.setItem('shortcutsConfig', JSON.stringify(shortcutsConfig));
+        console.log('Default shortcuts saved');
+    }
+    renderShortcuts();
 }
 
 function addShortcut() {
@@ -399,14 +631,13 @@ function addShortcut() {
     
     shortcutsConfig.shortcuts.push({ name, url });
     
-    chrome.storage.local.set({ shortcutsConfig }, () => {
-        if (domElements.shortcuts.newName && domElements.shortcuts.newUrl) {
-            domElements.shortcuts.newName.value = '';
-            domElements.shortcuts.newUrl.value = '';
-        }
-        toggleAddMode();
-        renderShortcuts();
-    });
+    localStorage.setItem('shortcutsConfig', JSON.stringify(shortcutsConfig));
+    if (domElements.shortcuts.newName && domElements.shortcuts.newUrl) {
+        domElements.shortcuts.newName.value = '';
+        domElements.shortcuts.newUrl.value = '';
+    }
+    toggleAddMode();
+    renderShortcuts();
 }
 
 function startEditingShortcut(index) {
@@ -456,11 +687,10 @@ function saveEditedShortcut() {
     
     shortcutsConfig.shortcuts[currentEditIndex] = { name, url };
     
-    chrome.storage.local.set({ shortcutsConfig }, () => {
-        console.log('Shortcut updated:', { name, url });
-        cancelEditingShortcut();
-        renderShortcuts();
-    });
+    localStorage.setItem('shortcutsConfig', JSON.stringify(shortcutsConfig));
+    console.log('Shortcut updated:', { name, url });
+    cancelEditingShortcut();
+    renderShortcuts();
 }
 
 function deleteShortcut(index) {
@@ -470,10 +700,9 @@ function deleteShortcut(index) {
     }
     
     shortcutsConfig.shortcuts.splice(index, 1);
-    chrome.storage.local.set({ shortcutsConfig }, () => {
-        console.log('Shortcut deleted at index:', index);
-        renderShortcuts();
-    });
+    localStorage.setItem('shortcutsConfig', JSON.stringify(shortcutsConfig));
+    console.log('Shortcut deleted at index:', index);
+    renderShortcuts();
 }
 
 function cancelEditingShortcut() {
@@ -503,16 +732,12 @@ function toggleAddMode() {
     }
 }
 
-
-
 async function fetchNewsHeadlines() {
     try {
-        // Using Bloomberg's free RSS feed
         const rssUrl = 'https://www.bloomberg.com/feeds/podcasts/financial-wellness.rss';
         const response = await fetch(rssUrl);
         const text = await response.text();
         
-        // Simple RSS parser
         const parser = new DOMParser();
         const rss = parser.parseFromString(text, 'text/xml');
         const items = rss.querySelectorAll('item');
@@ -520,7 +745,6 @@ async function fetchNewsHeadlines() {
         const newsContainer = document.getElementById('news-container');
         newsContainer.innerHTML = '';
         
-        // Limit to 5 latest items
         Array.from(items).slice(0, 5).forEach(item => {
             const title = item.querySelector('title').textContent;
             const link = item.querySelector('link').textContent;
@@ -554,10 +778,9 @@ const searchEngines = [
 ];
 let selectedEngine = 'google';
 
-
 function initializeEngineSettings() {
     const engineSelect = document.getElementById('search-engine-select');
-    engineSelect.value = selectedEngine;  // Set default selected engine
+    engineSelect.value = selectedEngine;
     engineSelect.addEventListener('change', (e) => {
         selectedEngine = e.target.value;
     });
@@ -571,10 +794,8 @@ function init() {
     loadShortcuts();
     loadCurrencies();
     initializeEngineSettings();
+    initializeTimeTools(); // Add this line
 
-    if (domElements.currency.convertButton) {
-        domElements.currency.convertButton.addEventListener('click', convertCurrency);
-    }
     if (domElements.currency.swapButton) {
         domElements.currency.swapButton.addEventListener('click', swapCurrencies);
     }
@@ -585,7 +806,7 @@ function init() {
         domElements.edit.saveButton.addEventListener('click', saveEditedShortcut);
     }
     if (domElements.edit.deleteButton) {
-        domElements.edit.deleteButton.addEventListener('click', deleteShortcut);
+        domElements.edit.deleteButton.addEventListener('click', () => deleteShortcut(currentEditIndex));
     }
     if (domElements.edit.cancelButton) {
         domElements.edit.cancelButton.addEventListener('click', cancelEditingShortcut);
@@ -605,8 +826,8 @@ function init() {
     buttonContainer.appendChild(domElements.buttons.edit);
     const rightHalf = document.querySelector('.right-half');
     if (rightHalf) {
-    const addShortcutDiv = rightHalf.querySelector('.add-shortcut');
-    rightHalf.insertBefore(buttonContainer, addShortcutDiv);
+        const addShortcutDiv = rightHalf.querySelector('.add-shortcut');
+        rightHalf.insertBefore(buttonContainer, addShortcutDiv);
     }
     
     if (domElements.edit.popup) {
@@ -623,7 +844,6 @@ function init() {
     engineSelect.addEventListener('change', (e) => {
         selectedEngine = e.target.value;
     });
-
 
     initializeEngineSettings();
 }

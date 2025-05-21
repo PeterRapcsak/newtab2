@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New Tab</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 </head>
 <body>
@@ -30,12 +31,11 @@
 
                 </select>
                 <input type="file" id="lens-input" accept="image/*" style="display:none">
-            </div>
-            <div class="search-controls">
+                <div class="search-controls">
                 <button id="advanced-btn">Advanced</button>
-                
-                
             </div>
+            </div>
+            
             <!-- Add to index.html -->
             <div id="advanced-search" class="advanced-search" style="display: none;">
                 <div class="advanced-grid">
@@ -74,6 +74,38 @@
                     </div>
                 </div>
             </div>
+
+            <div class="currency-exchanger">
+                <div class="exchange-form">
+                    <input type="number" id="amount" placeholder="Amount" min="0" step="any">
+                    <select id="from-currency"></select>
+                    <button id="swap-btn" title="Swap currencies">⇄</button>
+                    <select id="to-currency"></select>
+                </div>
+                <div id="result"></div>
+            </div>
+            <div class="time-tools">
+                <div class="stopwatch">
+                    <div class="display">
+                    <span class="digit">0</span><span class="digit">0</span>: <!-- Hours -->
+                    <span class="digit">0</span><span class="digit">0</span>: <!-- Minutes -->
+                    <span class="digit">0</span><span class="digit">0</span>. <!-- Seconds -->
+                    <span class="digit">0</span><span class="digit">0</span> <!-- Hundredths -->
+                </div>
+                    <div class="controls">
+                        <button class="start-stop">Start</button>
+                        <button class="reset">Reset</button>
+                    </div>
+                </div>
+                <div class="timer">
+                    <div class="display" contenteditable="true">
+                    </div>
+                    <div class="controls">
+                        <button class="start-stop">Start</button>
+                        <button class="reset">Reset</button>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="right-half">
             <div class="edit-shortcut" style="display: none;">
@@ -94,16 +126,7 @@
     </div>
     
     <div class="bottom-section">
-        <div class="currency-exchanger">
-            <div class="exchange-form">
-                <input type="number" id="amount" placeholder="Amount" min="0">
-                <select id="from-currency"></select>
-                <button id="swap-btn">⇄</button>
-                <select id="to-currency"></select>
-                <button id="convert-btn">Convert</button>
-            </div>
-            <div id="result"></div>
-        </div>
+        
 
         <div class="ai-tools">
             <a href="https://chat.openai.com/" class="ai-tool">
@@ -143,5 +166,5 @@
         <script src="scripts/script.js"></script>
     </div>
 </div>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9434475d68e45b88',t:'MTc0NzgzMjY1Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

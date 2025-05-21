@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap");
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&family=Roboto+Mono&display=swap");
 
 * {
     margin: 0;
@@ -41,7 +42,7 @@ body {
 .top-section {
     display: flex;
     width: 100%;
-    max-width: 1200px;
+    max-width: 1500px;
     gap: var(--gap);
     margin-bottom: var(--gap);
 }
@@ -53,7 +54,6 @@ body {
     flex-direction: column;
     gap: var(--gap);
 }
-
 
 /* Digital Clock */
 #digital-clock {
@@ -86,20 +86,22 @@ body {
     vertical-align: middle;
 }
 
-/* style.css, near your .search-bar rules */
+/* Bing Visual Search Button */
 #bing-visual-search-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0 8px;
-  display: flex;
-  align-items: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0 8px;
+    display: flex;
+    align-items: center;
 }
-#lbing-visual-search-btn:hover img {
-  transform: scale(1.1);
+
+#bing-visual-search-btn:hover img {
+    transform: scale(1.1);
 }
+
 #bing-visual-search-btn img {
-  transition: transform 0.2s;
+    transition: transform 0.2s;
 }
 
 /* Glow effect when dragging an image over the search bar */
@@ -109,7 +111,6 @@ body {
     border-radius: 6px;
     transition: box-shadow 0.2s, outline 0.2s;
 }
-
 
 /* Search Bar */
 .search-bar {
@@ -208,6 +209,216 @@ body {
 #add-shortcut-btn:hover {
     background-color: var(--button-hover);
     transform: scale(1.05);
+}
+
+/* Currency Exchanger */
+.currency-exchanger {
+    padding: 5px;
+    gap: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    background: var(--accent-light);
+    border-radius: var(--round);
+    flex: 0 0 50px;
+    transition: var(--transition);
+}
+
+.currency-exchanger:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Smooth hover animations for inputs */
+.exchange-form input[type="number"] {
+    width: 130px;
+    padding: 5px;
+    border: none;
+    background: transparent;
+    color: var(--text-light);
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.exchange-form input[type="number"]:focus {
+    outline: 1px solid var(--focus-color);
+}
+
+.time-tools {
+    display: flex;
+    gap: var(--gap);
+}
+
+.stopwatch, .timer {
+    background-color: var(--accent-light);
+    padding: 20px;
+    border-radius: var(--round);
+    flex: 1;
+    transition: var(--transition);
+    min-width: 280px;
+}
+
+.stopwatch:hover, .timer:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.timer .display {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 2.5rem;
+    text-align: center;
+    color: var(--text-light);
+    margin-bottom: 20px;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: var(--bg-color);
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    white-space: nowrap;
+}
+
+.timer .display.running,
+.stopwatch .display.running {
+    background-color: #2a2a2a;
+    user-select: none; /* Prevents text selection */
+    -webkit-user-select: none; /* For Safari */
+    -moz-user-select: none; /* For Firefox */
+    -ms-user-select: none; /* For Edge */
+}
+
+.timer .display.finished {
+    color: #ef4444;
+    animation: pulse 1s infinite;
+}
+
+.timer .display:focus {
+    outline: 2px solid var(--focus-color);
+}
+
+.digit {
+    display: inline-block;
+    min-width: 1.2ch;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+.stopwatch .display {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 2.5rem;
+    text-align: center;
+    display: flex;
+    gap: 0;
+    justify-content: center;
+    color: var(--text-light);
+    margin-bottom: 20px;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: var(--bg-color);
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.controls button {
+    padding: 10px 20px;
+    border: none;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border-radius: var(--round);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.controls button:hover {
+    background-color: var(--button-hover);
+    transform: scale(1.05);
+}
+
+.controls button:disabled {
+    background-color: var(--neutral-gray);
+    cursor: not-allowed;
+    transform: none;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* Smooth hover animations for select dropdowns */
+.exchange-form select {
+    width: 70px;
+    padding: 5px;
+    border: none;
+    background: #2a2a2a;
+    color: var(--text-light);
+    border-radius: 5px;
+    transition: var(--transition);
+}
+
+.exchange-form select option {
+    background: #2a2a2a;
+    color: var(--text-light);
+}
+
+.exchange-form select:focus {
+    outline: 1px solid var(--focus-color);
+}
+
+/* Smooth hover animations for buttons */
+.exchange-form button {
+    padding: 5px;
+    min-width: 50px;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    border-radius: var(--round);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.exchange-form button:hover {
+    background-color: var(--button-hover);
+    transform: scale(1.05);
+}
+
+/* Specific hover animation for swap button */
+#swap-btn {
+    padding: 5px;
+    font-size: 1.2rem;
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+#swap-btn:hover {
+    transform: rotate(180deg);
+}
+
+/* Smooth transition for result text */
+#result {
+    font-size: 1rem;
+    color: var(--text-light);
+    margin-top: 8px;
+    text-align: center;
+    transition: var(--transition);
+}
+
+#result:hover {
+    color: var(--button-text);
+    transform: scale(1.02);
 }
 
 /* Edit Popup */
@@ -406,16 +617,14 @@ body {
     transform: scale(1.1);
 }
 
-.lang-tools {
-    transition: var(--transition);
-}
-
+/* Language Tools */
 .lang-tools {
     display: flex;
     gap: 20px;
     padding: 10px 20px;
     background-color: var(--accent-light);
     border-radius: var(--round);
+    transition: var(--transition);
 }
 
 /* AI Tools */
@@ -458,11 +667,7 @@ body {
     font-size: 1rem;
 }
 
-
-
-
-
-/* Add to the bottom of style.css */
+/* Advanced Search */
 .advanced-search {
     background-color: var(--accent-light);
     padding: 15px;
@@ -531,7 +736,6 @@ body {
     flex-wrap: wrap;
 }
 
-.currency-exchanger,
 .lang-tools,
 .ai-tools {
     background-color: var(--bg-color);
@@ -547,7 +751,6 @@ body {
     transition: var(--transition);
 }
 
-.currency-exchanger:hover,
 .lang-tools:hover,
 .ai-tools:hover {
     transform: scale(1.02);
@@ -555,7 +758,7 @@ body {
 }
 
 .currency-exchanger {
-    flex: 0 0 350px;
+    flex: 0 0 50px;
     margin-top: 0;
 }
 
@@ -577,60 +780,7 @@ body {
     gap: 15px;
 }
 
-.exchange-form input,
-.exchange-form select,
-.exchange-form button {
-    padding: 10px;
-    border: none;
-    background: var(--primary-blue);
-    color: var(--text-light);
-    border-radius: 5px;
-}
-
-.exchange-form input {
-    width: 100px;
-}
-
-.exchange-form select {
-    width: 100px;
-}
-
-.exchange-form button {
-    background-color: var(--button-bg);
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.exchange-form button:hover {
-    background-color: var(--button-hover);
-    transform: scale(1.05);
-}
-
-#swap-btn {
-    background: none;
-    border: none;
-    color: var(--text-light);
-    font-size: 1.5rem;
-    cursor: pointer;
-}
-
-#swap-btn:hover {
-    color: var(--primary-blue);
-}
-
-#result {
-    font-size: 1.2rem;
-    color: var(--text-light);
-}
-
-/* Add to style.css */
-.advanced-search {
-    background-color: var(--accent-light);
-    padding: 15px;
-    border-radius: var(--round);
-    margin-top: 10px;
-}
-
+/* Advanced Search Grid */
 .advanced-grid {
     display: grid;
     gap: 12px;
@@ -739,7 +889,6 @@ body {
 }
 
 /* Responsive Adjustments */
-/* For screens smaller than 992px (e.g., tablets) */
 @media screen and (max-width: 992px) {
     .top-section {
         flex-direction: column;
@@ -751,9 +900,7 @@ body {
     }
 }
 
-/* For screens smaller than 768px (e.g., mobile devices) */
 @media (max-width: 992px) {
-
     .top-section {
         flex-direction: column;
         gap: 10px;
@@ -770,10 +917,11 @@ body {
     }
 
     #advanced-btn,
-    .advanced-search {
+    .advanced-search,
+    .currency-exchanger,
+    .time-tools {
         display: none;
     }
-
 
     .right-half {
         width: 100%;
@@ -785,7 +933,6 @@ body {
     }
 }
 
-/* For very small screens (e.g., mobile phones) */
 @media (max-width: 576px) {
     body {
         padding: 10px;
