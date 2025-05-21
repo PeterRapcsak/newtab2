@@ -3,43 +3,34 @@ let isEditMode = false;
 let isAddMode = false;
 let currentEditIndex = null;
 let dragStartIndex = null;
+let lastEditedInput = 'amount';
 
+let stopwatch;
+let timer;
+let activeTool = 'stopwatch'; // Default active tool
 
-
-
-
-
+const exchangeRateCache = {};
+const CACHE_EXPIRATION = 3600000;
 
 class Stopwatch {
-    constructor(displayElement, onStateChange) {
+    constructor(displayElement) {
         this.display = displayElement;
-        this.onStateChange = onStateChange || (() => {});
         this.running = false;
         this.time = 0;
         this.interval = null;
+        this.display.contentEditable = false; // Stopwatch is never editable
         this.updateDisplay();
-        this.onStateChange(this.running);
-    }
-
-    startStop() {
-        if (this.running) {
-            this.stop();
-        } else {
-            this.start();
-        }
     }
 
     start() {
         if (!this.running) {
             this.running = true;
-            this.display.contentEditable = false;
             this.display.classList.add('running');
             const startTime = Date.now() - this.time;
             this.interval = setInterval(() => {
                 this.time = Date.now() - startTime;
                 this.updateDisplay();
             }, 10);
-            this.onStateChange(this.running);
         }
     }
 
@@ -47,10 +38,7 @@ class Stopwatch {
         if (this.running) {
             clearInterval(this.interval);
             this.running = false;
-            this.display.contentEditable = true;
             this.display.classList.remove('running');
-            // Removed getTimeString call; this.time is already correct
-            this.onStateChange(this.running);
         }
     }
 
@@ -61,104 +49,34 @@ class Stopwatch {
     }
 
     updateDisplay() {
-        const hours = Math.floor(this.time / 3600000);
-        const minutes = Math.floor((this.time % 3600000) / 60000);
-        const seconds = Math.floor((this.time % 60000) / 1000);
-        const hundredths = Math.floor((this.time % 1000) / 10);
-
-        let formatted;
-        if (hours > 0) {
-            formatted = `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(hundredths).padStart(2, '0')}`;
-        } else if (minutes > 0) {
-            formatted = `${minutes}:${String(seconds).padStart(2, '0')}.${String(hundredths).padStart(2, '0')}`;
-        } else {
-            formatted = `${seconds}.${String(hundredths).padStart(2, '0')}`;
-        }
-
-        let displayHTML = '';
-        for (const char of formatted) {
-            if (/\d/.test(char)) {
-                displayHTML += `<span class="digit">${char}</span>`;
-            } else {
-                displayHTML += char;
-            }
-        }
-        this.display.innerHTML = displayHTML;
+        const totalSeconds = (this.time / 1000).toFixed(2); // Total seconds with 2 decimal places
+        this.display.innerHTML = `
+            <span class="digit">${totalSeconds}</span>
+        `;
     }
 }
 
 class Timer {
-    constructor(displayElement, onStateChange) {
+    constructor(displayElement) {
         this.display = displayElement;
-        this.onStateChange = onStateChange || (() => {});
-        this.time = '000000';
         this.running = false;
         this.remainingTime = 0;
         this.interval = null;
-        this.initializeInput();
-        this.updateDisplay(this.time);
-        this.onStateChange(this.running);
-    }
-  
-    initializeInput() {
+        this.inputBuffer = '';
+        this.display.setAttribute('tabindex', '0'); // Make display focusable
         this.display.addEventListener('keydown', (e) => {
-            e.preventDefault();
-            if (/\d/.test(e.key)) {
-                this.handleDigitInput(e.key);
-            } else if (e.key === 'Backspace') {
-                this.handleBackspace();
+            if (this.running) return;
+            if (/[0-9]/.test(e.key)) {
+                e.preventDefault();
+                this.handleInput(e.key);
             }
         });
-    }
-
-    handleDigitInput(digit) {
-        this.time = this.time.slice(1) + digit;
-        this.updateDisplay(this.time);
-    }
-
-    handleBackspace() {
-        this.time = this.time.slice(0, -1) + '0';
-        this.updateDisplay(this.time);
-    }
-
-    getTimeString() {
-        return Array.from(this.display.querySelectorAll('.digit'))
-            .map(digit => digit.textContent)
-            .join('')
-            .replace(/:/g, '');
-    }
-
-    updateDisplay(input = '000000') {
-        const padded = input.padStart(6, '0');
-        this.time = padded;
-        const hours = padded.slice(0, 2);
-        const minutes = padded.slice(2, 4);
-        const seconds = padded.slice(4, 6);
-        
-        this.display.innerHTML = `
-            <span class="digit">${hours}</span>:
-            <span class="digit">${minutes}</span>:
-            <span class="digit">${seconds}</span>
-        `;
-        
-        this.remainingTime = 
-            (parseInt(hours) * 3600) + 
-            (parseInt(minutes) * 60) + 
-            parseInt(seconds);
-    }
-
-    startStop() {
-        if (this.running) {
-            this.stop();
-        } else {
-            this.start();
-        }
+        this.updateDisplayFromSeconds();
     }
 
     start() {
         if (this.remainingTime > 0 && !this.running) {
             this.running = true;
-            this.display.contentEditable = false;
             this.display.classList.add('running');
             this.interval = setInterval(() => {
                 if (--this.remainingTime <= 0) {
@@ -166,16 +84,8 @@ class Timer {
                     this.remainingTime = 0;
                     this.display.classList.add('finished');
                 }
-                const hours = Math.floor(this.remainingTime / 3600);
-                const minutes = Math.floor((this.remainingTime % 3600) / 60);
-                const seconds = this.remainingTime % 60;
-                this.display.innerHTML = `
-                    <span class="digit">${String(hours).padStart(2, '0')}</span>:
-                    <span class="digit">${String(minutes).padStart(2, '0')}</span>:
-                    <span class="digit">${String(seconds).padStart(2, '0')}</span>
-                `;
+                this.updateDisplayFromSeconds();
             }, 1000);
-            this.onStateChange(this.running);
         }
     }
 
@@ -183,86 +93,119 @@ class Timer {
         if (this.running) {
             clearInterval(this.interval);
             this.running = false;
+            this.display.classList.remove('running', 'finished');
         }
-        this.display.contentEditable = true;
-        this.display.classList.remove('running', 'finished');
-        const hours = Math.floor(this.remainingTime / 3600);
-        const minutes = Math.floor((this.remainingTime % 3600) / 60);
-        const seconds = this.remainingTime % 60;
-        this.time = `${String(hours).padStart(2, '0')}${String(minutes).padStart(2, '0')}${String(seconds).padStart(2, '0')}`;
-        this.onStateChange(this.running);
     }
 
     reset() {
         this.stop();
         this.remainingTime = 0;
-        this.updateDisplay('000000');
-        this.display.classList.remove('finished');
+        this.inputBuffer = '';
+        this.updateDisplayFromSeconds();
+    }
+
+    setTime(seconds) {
+        this.remainingTime = seconds;
+        this.updateDisplayFromSeconds();
+    }
+
+    updateDisplayFromSeconds() {
+        const hours = Math.floor(this.remainingTime / 3600);
+        const minutes = Math.floor((this.remainingTime % 3600) / 60);
+        const seconds = this.remainingTime % 60;
+        const hoursEl = this.display.querySelector('.hours');
+        const minutesEl = this.display.querySelector('.minutes');
+        const secondsEl = this.display.querySelector('.seconds');
+        if (hoursEl) hoursEl.textContent = String(hours).padStart(2, '0');
+        if (minutesEl) minutesEl.textContent = String(minutes).padStart(2, '0');
+        if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, '0');
+    }
+
+    handleInput(value) {
+        if (this.running) return;
+        // Append new digit to inputBuffer and keep only the last 6 digits
+        this.inputBuffer = (this.inputBuffer + value).slice(-6);
+        const padded = this.inputBuffer.padStart(6, '0');
+        let hours = parseInt(padded.slice(0, 2)) || 0;
+        let minutes = parseInt(padded.slice(2, 4)) || 0;
+        let seconds = parseInt(padded.slice(4, 6)) || 0;
+        // Cap each section at 2 digits and enforce limits
+        hours = Math.min(hours, 99);
+        minutes = Math.min(minutes, 59);
+        seconds = Math.min(seconds, 59);
+        this.remainingTime = hours * 3600 + minutes * 60 + seconds;
+        this.updateDisplayFromSeconds();
     }
 }
 
 function initializeTimeTools() {
-    // Stopwatch
     const stopwatchDisplay = document.querySelector('.stopwatch .display');
-    const stopwatchStartStopBtn = document.querySelector('.stopwatch .start-stop');
-    const stopwatchResetBtn = document.querySelector('.stopwatch .reset');
-    
-    stopwatchStartStopBtn.innerHTML = '<i class="fas fa-play"></i>';
-    stopwatchStartStopBtn.setAttribute('aria-label', 'Start');
-    
-    const stopwatch = new Stopwatch(stopwatchDisplay, (running) => {
-        const icon = stopwatchStartStopBtn.querySelector('i');
-        if (running) {
-            icon.classList.remove('fa-play');
-            icon.classList.add('fa-pause');
-            stopwatchStartStopBtn.setAttribute('aria-label', 'Pause');
-        } else {
-            icon.classList.remove('fa-pause');
-            icon.classList.add('fa-play');
-            stopwatchStartStopBtn.setAttribute('aria-label', 'Start');
-        }
-        console.log(`Stopwatch running: ${running}, Icon classes: ${icon.className}`);
-    });
+    stopwatch = new Stopwatch(stopwatchDisplay);
 
-    stopwatchStartStopBtn.addEventListener('click', () => {
-        stopwatch.startStop();
-    });
-    stopwatchResetBtn.addEventListener('click', () => {
-        stopwatch.reset();
-    });
-
-    // Timer
     const timerDisplay = document.querySelector('.timer .display');
-    const timerStartStopBtn = document.querySelector('.timer .start-stop');
-    const timerResetBtn = document.querySelector('.timer .reset');
-    
-    timerStartStopBtn.innerHTML = '<i class="fas fa-play"></i>';
-    timerStartStopBtn.setAttribute('aria-label', 'Start');
-    
-    const timer = new Timer(timerDisplay, (running) => {
-        const icon = timerStartStopBtn.querySelector('i');
-        icon.classList.toggle('fa-play', !running);
-        icon.classList.toggle('fa-pause', running);
-        timerStartStopBtn.setAttribute('aria-label', running ? 'Pause' : 'Start');
+    timer = new Timer(timerDisplay);
+
+    const hoursEl = timerDisplay.querySelector('.hours');
+    const minutesEl = timerDisplay.querySelector('.minutes');
+    const secondsEl = timerDisplay.querySelector('.seconds');
+
+    const toggleButtons = document.querySelectorAll('.toggle-btn');
+    const startStopBtn = document.querySelector('.controls .start-stop');
+    const resetBtn = document.querySelector('.controls .reset');
+
+    function updateUI() {
+        const icon = startStopBtn.querySelector('i');
+        const isRunning = activeTool === 'stopwatch' ? stopwatch.running : timer.running;
+        icon.classList.toggle('fa-play', !isRunning);
+        icon.classList.toggle('fa-pause', isRunning);
+        startStopBtn.setAttribute('aria-label', isRunning ? 'Pause' : 'Start');
+    }
+
+    toggleButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const target = button.dataset.target;
+            if (activeTool !== target) {
+                activeTool = target;
+                toggleButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                document.querySelector('.stopwatch').classList.toggle('active', target === 'stopwatch');
+                document.querySelector('.timer').classList.toggle('active', target === 'timer');
+                if (activeTool === 'stopwatch') {
+                    stopwatch.updateDisplay();
+                } else {
+                    timer.updateDisplayFromSeconds();
+                }
+                updateUI();
+            }
+        });
     });
 
-    timerStartStopBtn.addEventListener('click', () => {
-        timer.startStop();
+    startStopBtn.addEventListener('click', () => {
+        if (activeTool === 'stopwatch') {
+            if (stopwatch.running) stopwatch.stop();
+            else stopwatch.start();
+        } else {
+            if (timer.running) timer.stop();
+            else timer.start();
+        }
+        updateUI();
     });
-    timerResetBtn.addEventListener('click', () => {
-        timer.reset();
+
+    resetBtn.addEventListener('click', () => {
+        if (activeTool === 'stopwatch') {
+            stopwatch.reset();
+        } else {
+            timer.reset();
+        }
+        updateUI();
     });
+
+    document.querySelector('.toggle-btn[data-target="stopwatch"]').classList.add('active');
+    document.querySelector('.stopwatch').classList.add('active');
+    updateUI();
 }
 
-
-
-
-
-
-
-
-
-
+// Rest of the original code remains unchanged
 
 const domElements = {
     clock: {
@@ -274,8 +217,7 @@ const domElements = {
         fromSelect: document.getElementById('from-currency'),
         toSelect: document.getElementById('to-currency'),
         amountInput: document.getElementById('amount'),
-        swapButton: document.getElementById('swap-btn'),
-        resultDiv: document.getElementById('result')
+        resultInput: document.getElementById('result')
     },
     search: {
         input: document.getElementById('search-q'),
@@ -332,7 +274,6 @@ if (searchBar) {
     });
 }
 
-// Fetch and populate currency dropdowns
 async function loadCurrencies() {
     try {
         const response = await fetch('https://api.frankfurter.app/currencies');
@@ -354,74 +295,102 @@ async function loadCurrencies() {
             
             domElements.currency.fromSelect.value = 'EUR';
             domElements.currency.toSelect.value = 'HUF';
-
-            if (domElements.currency.amountInput) {
-                domElements.currency.amountInput.value = '1';
-                convertCurrency();
-            }
+            domElements.currency.amountInput.value = '1';
+            convertCurrency('amount');
         }
     } catch (error) {
         console.error('Error fetching currencies:', error);
     }
 }
 
-// Perform currency conversion
-async function convertCurrency() {
+async function convertCurrency(source) {
     const from = domElements.currency.fromSelect?.value;
     const to = domElements.currency.toSelect?.value;
-    const amount = parseFloat(domElements.currency.amountInput?.value);
+    let amount, result;
 
-    if (!from || !to || isNaN(amount) || amount <= 0) {
-        domElements.currency.resultDiv.textContent = '';
-        return;
+    if (source === 'amount') {
+        amount = parseFloat(domElements.currency.amountInput?.value);
+        if (isNaN(amount) || amount < 0) {
+            domElements.currency.resultInput.value = '';
+            return;
+        }
+    } else {
+        result = parseFloat(domElements.currency.resultInput?.value);
+        if (isNaN(result) || result < 0) {
+            domElements.currency.amountInput.value = '';
+            return;
+        }
     }
 
-    try {
-        const response = await fetch(`https://api.frankfurter.app/latest?from=${from}&to=${to}`);
-        const data = await response.json();
-        const rate = data.rates[to];
-        const result = amount * rate;
+    const cacheKey = `${from}_${to}`;
+    const now = Date.now();
 
-        const numberFormatter = new Intl.NumberFormat('hu-HU', {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 2,
-            useGrouping: true
-        });
-
-        const currencyFormatter = new Intl.NumberFormat('hu-HU', {
-            style: 'currency',
-            currency: to,
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 2
-        });
-
-        const formattedResult = currencyFormatter.format(result);
-
-        domElements.currency.resultDiv.textContent = `${formattedResult}`;
-    } catch (error) {
-        console.error('Error fetching exchange rate:', error);
-        domElements.currency.resultDiv.textContent = 'Error fetching exchange rate. Please try again later.';
+    if (exchangeRateCache[cacheKey] && (now - exchangeRateCache[cacheKey].timestamp < CACHE_EXPIRATION)) {
+        const rate = exchangeRateCache[cacheKey].rate;
+        if (source === 'amount') {
+            result = amount * rate;
+            domElements.currency.resultInput.value = result.toFixed(2);
+        } else {
+            amount = result / rate;
+            domElements.currency.amountInput.value = amount.toFixed(2);
+        }
+    } else {
+        try {
+            const response = await fetch(`https://api.frankfurter.app/latest?from=${from}&to=${to}`);
+            const data = await response.json();
+            const rate = data.rates[to];
+            exchangeRateCache[cacheKey] = { rate, timestamp: now };
+            if (source === 'amount') {
+                result = amount * rate;
+                domElements.currency.resultInput.value = result.toFixed(2);
+            } else {
+                amount = result / rate;
+                domElements.currency.amountInput.value = amount.toFixed(2);
+            }
+        } catch (error) {
+            console.error('Error fetching exchange rate:', error);
+            domElements.currency.resultInput.value = '';
+            domElements.currency.amountInput.value = '';
+        }
     }
 }
 
-// Swap the selected currencies
-function swapCurrencies() {
-    const from = domElements.currency.fromSelect?.value;
-    const to = domElements.currency.toSelect?.value;
-    domElements.currency.fromSelect.value = to;
-    domElements.currency.toSelect.value = from;
-    convertCurrency();
-}
-
-// Add automatic conversion with debounce
-if (domElements.currency.amountInput) {
+function setupCurrencyInputs() {
     let debounceTimer;
-    domElements.currency.amountInput.addEventListener('input', () => {
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => {
-            convertCurrency();
-        }, 100); // 300ms debounce delay
-    });
+    if (domElements.currency.amountInput) {
+        domElements.currency.amountInput.addEventListener('input', () => {
+            lastEditedInput = 'amount';
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                convertCurrency('amount');
+            }, 300);
+        });
+    }
+    if (domElements.currency.resultInput) {
+        domElements.currency.resultInput.addEventListener('input', () => {
+            lastEditedInput = 'result';
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                convertCurrency('result');
+            }, 300);
+        });
+    }
+    if (domElements.currency.fromSelect) {
+        domElements.currency.fromSelect.addEventListener('change', () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                convertCurrency(lastEditedInput);
+            }, 300);
+        });
+    }
+    if (domElements.currency.toSelect) {
+        domElements.currency.toSelect.addEventListener('change', () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                convertCurrency(lastEditedInput);
+            }, 300);
+        });
+    }
 }
 
 function handleShortcutClick(event) {
@@ -805,15 +774,10 @@ function init() {
     setupSearch();
     loadShortcuts();
     loadCurrencies();
+    setupCurrencyInputs();
     initializeEngineSettings();
-    initializeTimeTools(); // Add this line
+    initializeTimeTools();
 
-    if (domElements.currency.swapButton) {
-        domElements.currency.swapButton.addEventListener('click', swapCurrencies);
-    }
-    if (domElements.shortcuts.addButton) {
-        domElements.shortcuts.addButton.addEventListener('click', addShortcut);
-    }
     if (domElements.edit.saveButton) {
         domElements.edit.saveButton.addEventListener('click', saveEditedShortcut);
     }

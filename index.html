@@ -75,34 +75,37 @@
                 </div>
             </div>
 
-            <div class="currency-exchanger">
-                <div class="exchange-form">
-                    <input type="number" id="amount" placeholder="Amount" min="0" step="any">
-                    <select id="from-currency"></select>
-                    <button id="swap-btn" title="Swap currencies">⇄</button>
-                    <select id="to-currency"></select>
+            <div class="tools-row">
+                <div class="currency-exchanger">
+                    <form class="exchange-form">
+                        <div class="currency-row">
+                            <select id="from-currency"></select>
+                            <input type="number" id="amount" step="any" min="0" placeholder="Amount">
+                        </div>
+                        <div class="currency-row">
+                            <select id="to-currency"></select>
+                            <input type="number" id="result" step="any" min="0" placeholder="Result">
+                        </div>
+                    </form>
                 </div>
-                <div id="result"></div>
-            </div>
-            <div class="time-tools">
-                <div class="stopwatch">
-                    <div class="display">
-                    <span class="digit">0</span><span class="digit">0</span>: <!-- Hours -->
-                    <span class="digit">0</span><span class="digit">0</span>: <!-- Minutes -->
-                    <span class="digit">0</span><span class="digit">0</span>. <!-- Seconds -->
-                    <span class="digit">0</span><span class="digit">0</span> <!-- Hundredths -->
-                </div>
+                <div class="time-tools">
                     <div class="controls">
-                        <button class="start-stop" aria-label="Start"><i class="fas fa-play"></i></button>
-                        <button class="reset" aria-label="Reset"><i class="fas fa-undo"></i></button>
+                        <button class="toggle-btn active" data-target="stopwatch">Stopwatch</button>
+                        <button class="toggle-btn" data-target="timer">Timer</button>
+                        <button class="start-stop"><i class="fas fa-play"></i></button>
+                        <button class="reset"><i class="fas fa-redo"></i></button>
                     </div>
-                </div>
-                <div class="timer">
-                    <div class="display" contenteditable="true">
-                    </div>
-                    <div class="controls">
-                        <button class="start-stop" aria-label="Start"><i class="fas fa-play"></i></button>
-                        <button class="reset" aria-label="Reset"><i class="fas fa-undo"></i></button>
+                    <div class="time-tool-content">
+                        <div class="stopwatch active">
+                            <div class="display">0.00</div>
+                        </div>
+                        <div class="timer">
+                            <div class="display" contenteditable="true">
+                                <span class="digit hours" contenteditable="true">00</span>:
+                                <span class="digit minutes" contenteditable="true">00</span>:
+                                <span class="digit seconds" contenteditable="true">00</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -142,7 +145,7 @@
                 <span>Deepseek</span>
             </a>
             <a href="https://gemini.google.com/app" class="ai-tool">
-                <img src="https://www.google.com/s2/favicons?domain=google.com&sz=32" alt="Gemini">
+                <img src="https://www.google.com/s2/favicons?domain=gemini.google.com&sz=32" alt="Gemini">
                 <span>Gemini</span>
             </a>
             <a href="https://www.blackbox.ai/" class="ai-tool">

@@ -213,13 +213,11 @@ body {
 
 /* Currency Exchanger */
 .currency-exchanger {
-    padding: 5px;
-    gap: 5px;
+    padding: 20px;
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     background: var(--accent-light);
     border-radius: var(--round);
-    flex: 0 0 50px;
     transition: var(--transition);
 }
 
@@ -228,12 +226,43 @@ body {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Smooth hover animations for inputs */
-.exchange-form input[type="number"] {
-    width: 130px;
-    padding: 5px;
+.exchange-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.currency-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.exchange-form select {
+    width: 70px;
+    padding: 8px;
     border: none;
-    background: transparent;
+    background: var(--bg-color);
+    color: var(--text-light);
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.exchange-form select option {
+    background: var(--bg-color);
+    color: var(--text-light);
+}
+
+.exchange-form select:focus {
+    outline: 1px solid var(--focus-color);
+}
+
+.exchange-form input[type="number"] {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    background: var(--bg-color);
     color: var(--text-light);
     border-radius: 5px;
     font-size: 1rem;
@@ -283,10 +312,7 @@ body {
 .timer .display.running,
 .stopwatch .display.running {
     background-color: #2a2a2a;
-    user-select: none; /* Prevents text selection */
-    -webkit-user-select: none; /* For Safari */
-    -moz-user-select: none; /* For Firefox */
-    -ms-user-select: none; /* For Edge */
+    user-select: none;
 }
 
 .timer .display.finished {
@@ -353,72 +379,6 @@ body {
 @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.6; }
-}
-
-/* Smooth hover animations for select dropdowns */
-.exchange-form select {
-    width: 70px;
-    padding: 5px;
-    border: none;
-    background: #2a2a2a;
-    color: var(--text-light);
-    border-radius: 5px;
-    transition: var(--transition);
-}
-
-.exchange-form select option {
-    background: #2a2a2a;
-    color: var(--text-light);
-}
-
-.exchange-form select:focus {
-    outline: 1px solid var(--focus-color);
-}
-
-/* Smooth hover animations for buttons */
-.exchange-form button {
-    padding: 5px;
-    min-width: 50px;
-    background-color: var(--button-bg);
-    color: var(--button-text);
-    border: none;
-    border-radius: var(--round);
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.exchange-form button:hover {
-    background-color: var(--button-hover);
-    transform: scale(1.05);
-}
-
-/* Specific hover animation for swap button */
-#swap-btn {
-    padding: 5px;
-    font-size: 1.2rem;
-    background: none;
-    border: none;
-    color: var(--text-light);
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-#swap-btn:hover {
-    transform: rotate(180deg);
-}
-
-/* Smooth transition for result text */
-#result {
-    font-size: 1rem;
-    color: var(--text-light);
-    margin-top: 8px;
-    text-align: center;
-    transition: var(--transition);
-}
-
-#result:hover {
-    color: var(--button-text);
-    transform: scale(1.02);
 }
 
 /* Edit Popup */
@@ -757,11 +717,6 @@ body {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.currency-exchanger {
-    flex: 0 0 50px;
-    margin-top: 0;
-}
-
 .lang-tools {
     flex: 1;
     min-width: 150px;
@@ -866,6 +821,132 @@ body {
     text-align: center;
     padding: 10px;
 }
+
+/* Tools Row to place currency exchanger and time tools side by side */
+.tools-row {
+    display: flex;
+    gap: var(--gap);
+    width: 100%;
+}
+
+.currency-exchanger,
+.time-tools {
+    flex: 1;
+    background-color: var(--accent-light);
+    padding: 20px;
+    border-radius: var(--round);
+    transition: var(--transition);
+    justify-content: center;
+}
+
+.currency-exchanger:hover,
+.time-tools:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Time Tools with Toggle */
+.time-tools {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toggle-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.toggle-btn {
+    padding: 5px 15px;
+    border: none;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    cursor: pointer;
+    border-radius: var(--round);
+    transition: var(--transition);
+}
+
+.toggle-btn:hover {
+    background-color: var(--button-hover);
+    transform: scale(1.05);
+}
+
+.toggle-btn.active {
+    background-color: var(--button-hover);
+}
+
+.time-tool-content > div {
+    display: none;
+}
+
+.time-tool-content > div.active {
+    display: block;
+}
+
+/* Adjust stopwatch and timer styles */
+.stopwatch, .timer {
+    padding: 0;
+    background-color: transparent;
+    min-width: 0;
+    flex: none;
+}
+
+
+
+
+.time-tools {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Remove toggle-buttons styling as it's no longer a separate div */
+
+/* Style the controls div */
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.controls button {
+    padding: 10px 20px;
+    border: none;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border-radius: var(--round);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.controls button:hover {
+    background-color: var(--button-hover);
+    transform: scale(1.05);
+}
+
+.toggle-btn.active {
+    background-color: var(--button-hover);
+}
+
+/* Adjust stopwatch and timer divs */
+.time-tool-content > div {
+    display: none;
+}
+
+.time-tool-content > div.active {
+    display: block;
+}
+
+.stopwatch, .timer {
+    padding: 0;
+    background-color: transparent;
+    min-width: 0;
+    flex: none;
+}
+
 
 /* Animations */
 @keyframes fadeIn {
