@@ -3,7 +3,6 @@ import { domElements } from './dom.js';
 export let shortcutsConfig = { shortcuts: [] };
 export let isEditMode = false;
 export let isAddMode = false;
-export let currentEditIndex = null;
 export let dragStartIndex = null;
 
 export function handleShortcutClick(event) {
@@ -21,24 +20,44 @@ export function renderShortcuts() {
         console.error('Shortcuts container not found');
         return;
     }
-    domElements.shortcuts.container.innerHTML = '';
+    domElements.shortcuts.container.innerHTML = ''; // Clear existing shortcuts
     
-    shortcutsConfig.shortcuts.forEach((shortcut, index) => {
+    let shortcuts = [];
+    try {
+        const storedConfig = localStorage.getItem('shortcutsConfig');
+        if (storedConfig) {
+            const parsedConfig = JSON.parse(storedConfig);
+            if (parsedConfig && Array.isArray(parsedConfig.shortcuts)) {
+                shortcuts = parsedConfig.shortcuts;
+            }
+        }
+    } catch (error) {
+        console.error('Error parsing shortcutsConfig from localStorage:', error);
+    }
+
+    shortcuts.forEach((shortcut, index) => {
         const shortcutEl = document.createElement('div');
         shortcutEl.className = 'shortcut';
         shortcutEl.setAttribute('draggable', 'true');
         shortcutEl.dataset.index = index;
         
-        const hostname = new URL(shortcut.url).hostname;
-        const domainParts = hostname.split('.');
-        const mainDomain = domainParts.length > 2 ? domainParts.slice(-2).join('.') : hostname;
+        let mainDomain;
+        try {
+            mainDomain = new URL(shortcut.url).hostname;
+        } catch (e) {
+            console.warn(`Invalid URL for shortcut "${shortcut.name}": ${shortcut.url}`);
+            mainDomain = 'invalid';
+        }
+        const domainParts = mainDomain.split('.');
+        const domainName = domainParts.length > 2 ? domainParts.slice(-2).join('.') : mainDomain;
 
         shortcutEl.innerHTML = `
-        <a href="${shortcut.url}">
-            <img src="https://www.google.com/s2/favicons?domain=${mainDomain}&sz=64" alt="${shortcut.name}">
-        </a>
-        <span class="shortcut-name">${shortcut.name}</span>
-        ${isEditMode ? `<button class="delete-shortcut-btn" data-index="${index}">×</button>` : ''}
+            <a href="${shortcut.url}">
+                <img src="https://www.google.com/s2/favicons?domain=${domainName}&sz=64" 
+                     onerror="this.src='/icons/fallback-icon.png';" alt="${shortcut.name}">
+            </a>
+            <span class="shortcut-name">${shortcut.name}</span>
+            ${isEditMode ? `<button class="delete-shortcut-btn" data-index="${index}">×</button>` : ''}
         `;
         domElements.shortcuts.container.appendChild(shortcutEl);
     });
@@ -99,7 +118,16 @@ export function reorderShortcuts(fromIndex, toIndex) {
 export function loadShortcuts() {
     const storedConfig = localStorage.getItem('shortcutsConfig');
     if (storedConfig) {
-        shortcutsConfig = JSON.parse(storedConfig);
+        try {
+            shortcutsConfig = JSON.parse(storedConfig);
+            if (!Array.isArray(shortcutsConfig.shortcuts)) {
+                console.warn('Invalid shortcuts array in stored config, resetting to empty');
+                shortcutsConfig.shortcuts = [];
+            }
+        } catch (error) {
+            console.error('Error parsing stored shortcutsConfig:', error);
+            shortcutsConfig = { shortcuts: [] };
+        }
     } else {
         shortcutsConfig = {
             shortcuts: [
@@ -146,62 +174,9 @@ export function addShortcut() {
     renderShortcuts();
 }
 
-export function startEditingShortcut(index) {
-    if (index < 0 || index >= shortcutsConfig.shortcuts.length) {
-        console.error('Invalid shortcut index:', index);
-        return;
-    }
-    
-    currentEditIndex = index;
-    const shortcut = shortcutsConfig.shortcuts[index];
-
-    if (domElements.edit.name && domElements.edit.url && domElements.edit.popup) {
-        domElements.edit.name.value = shortcut.name;
-        domElements.edit.url.value = shortcut.url;
-        domElements.edit.popup.style.display = 'flex';
-        console.log('Edit popup opened for:', shortcut);
-    }
-    
-    if (isAddMode) toggleAddMode();
-    if (isEditMode) toggleEditMode();
-}
-
-export function saveEditedShortcut() {
-    if (currentEditIndex === null || currentEditIndex < 0 || currentEditIndex >= shortcutsConfig.shortcuts.length) {
-        console.error('Invalid edit index:', currentEditIndex);
-        return;
-    }
-    
-    const name = domElements.edit.name?.value.trim();
-    let url = domElements.edit.url?.value.trim();
-    
-    if (!name || !url) {
-        alert('Please enter both a name and URL');
-        return;
-    }
-    
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-        url = 'https://' + url;
-    }
-    
-    try {
-        new URL(url);
-    } catch {
-        alert('Please enter a valid URL');
-        return;
-    }
-    
-    shortcutsConfig.shortcuts[currentEditIndex] = { name, url };
-    
-    localStorage.setItem('shortcutsConfig', JSON.stringify(shortcutsConfig));
-    console.log('Shortcut updated:', { name, url });
-    cancelEditingShortcut();
-    renderShortcuts();
-}
-
 export function deleteShortcut(index) {
     if (index === null || index < 0 || index >= shortcutsConfig.shortcuts.length) {
-        console.error('Invalid edit index:', index);
+        console.error('Invalid delete index:', index);
         return;
     }
     
@@ -211,21 +186,16 @@ export function deleteShortcut(index) {
     renderShortcuts();
 }
 
-export function cancelEditingShortcut() {
-    currentEditIndex = null;
-    if (domElements.edit.popup) {
-        domElements.edit.popup.style.display = 'none';
-    }
-    if (domElements.edit.name && domElements.edit.url) {
-        domElements.edit.name.value = '';
-        domElements.edit.url.value = '';
-    }
-}
-
 export function toggleEditMode() {
     isEditMode = !isEditMode;
     if (domElements.buttons.edit) {
         domElements.buttons.edit.textContent = isEditMode ? 'Done' : 'Edit';
+    }
+    if (domElements.buttons.import) {
+        domElements.buttons.import.style.display = isEditMode ? '' : 'none';
+    }
+    if (domElements.buttons.export) {
+        domElements.buttons.export.style.display = isEditMode ? '' : 'none';
     }
     renderShortcuts();
 }

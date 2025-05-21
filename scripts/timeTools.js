@@ -49,14 +49,34 @@ export class Timer {
         this.remainingTime = 0;
         this.interval = null;
         this.inputBuffer = '';
-        this.display.setAttribute('tabindex', '0');
+        this.display.setAttribute('tabindex', '0'); // Makes the element focusable
+        this.display.contentEditable = false; // Prevents direct text editing
+        this.display.setAttribute('aria-readonly', 'true'); // Accessibility
+
+        // Prevent default behavior for all keydown events except numbers
         this.display.addEventListener('keydown', (e) => {
-            if (this.running) return;
+            if (this.running) {
+                e.preventDefault();
+                return;
+            }
             if (/[0-9]/.test(e.key)) {
                 e.preventDefault();
                 this.handleInput(e.key);
+            } else {
+                e.preventDefault(); // Block all other keys
             }
         });
+
+        // Prevent pasting or other input methods
+        this.display.addEventListener('input', (e) => {
+            e.preventDefault();
+            this.updateDisplayFromSeconds(); // Revert to current time
+        });
+
+        // Prevent context menu or other interactions
+        this.display.addEventListener('paste', (e) => e.preventDefault());
+        this.display.addEventListener('cut', (e) => e.preventDefault());
+
         this.updateDisplayFromSeconds();
     }
 
@@ -100,12 +120,11 @@ export class Timer {
         const hours = Math.floor(this.remainingTime / 3600);
         const minutes = Math.floor((this.remainingTime % 3600) / 60);
         const seconds = this.remainingTime % 60;
-        const hoursEl = this.display.querySelector('.hours');
-        const minutesEl = this.display.querySelector('.minutes');
-        const secondsEl = this.display.querySelector('.seconds');
-        if (hoursEl) hoursEl.textContent = String(hours).padStart(2, '0');
-        if (minutesEl) minutesEl.textContent = String(minutes).padStart(2, '0');
-        if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, '0');
+        this.display.innerHTML = `
+            <span class="digit hours">${String(hours).padStart(2, '0')}</span><span class="time-segment">:</span>
+            <span class="digit minutes">${String(minutes).padStart(2, '0')}</span><span class="time-segment">:</span>
+            <span class="digit seconds">${String(seconds).padStart(2, '0')}</span>
+        `;
     }
 
     handleInput(value) {

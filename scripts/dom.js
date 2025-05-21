@@ -23,17 +23,10 @@ export const domElements = {
         newUrl: document.getElementById('new-shortcut-url'),
         addButton: document.getElementById('add-shortcut-btn')
     },
-    edit: {
-        popup: document.getElementById('edit-popup'),
-        content: document.querySelector('.edit-popup-content'),
-        name: document.getElementById('edit-shortcut-name'),
-        url: document.getElementById('edit-shortcut-url'),
-        saveButton: document.getElementById('save-shortcut-btn'),
-        deleteButton: document.getElementById('delete-shortcut-btn'),
-        cancelButton: document.getElementById('cancel-shortcut-btn')
-    },
     buttons: {
         edit: null,
-        new: null
+        new: null,
+        import: null,
+        export: null
     }
 };

@@ -1,18 +1,24 @@
 {
 	"manifest_version": 3,
 	"name": "NewTab 2",
-	"version": "2.3",
-	"description": "xd",
+	"version": "2.4.1",
+	"description": "replaces chrome://newtab with index.html (best suited for developers)",
 	"permissions": ["search", "storage", "tabs"],
 	"optional_permissions": ["bookmarks"],
 	"host_permissions": [
-        "https://www.google.com/complete/search?client=*",
-        "https://duckduckgo.com/ac/?q=*",
-        "https://search.brave.com/api/suggest?q=*",
-        "https://search.brave.com/*",
-        "https://*.wikipedia.org/w/api.php?action=opensearch&search=*",
-        "https://api.frankfurter.app/*"
-    ],
+	    "https://www.google.com/complete/search?client=*",
+	    "https://duckduckgo.com/ac/?q=*",
+	    "https://search.brave.com/api/suggest?q=*",
+	    "https://search.brave.com/*",
+	    "https://*.wikipedia.org/w/api.php?action=opensearch&search=*",
+	    "https://api.frankfurter.app/*"
+	],
+	"web_accessible_resources": [
+    {
+      "resources": ["icons/fallback-icon.png"],
+      "matches": ["<all_urls>"]
+    }
+  	],
 	"icons": {
 		"16":  	"favicon/icon16.png",
 		"32":  	"favicon/icon32.png",
