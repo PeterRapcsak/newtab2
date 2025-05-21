@@ -297,7 +297,6 @@ body {
     font-size: 2.5rem;
     text-align: center;
     color: var(--text-light);
-    margin-bottom: 20px;
     padding: 12px;
     border-radius: 8px;
     background-color: var(--bg-color);
@@ -339,7 +338,6 @@ body {
     gap: 0;
     justify-content: center;
     color: var(--text-light);
-    margin-bottom: 20px;
     padding: 12px;
     border-radius: 8px;
     background-color: var(--bg-color);
@@ -702,7 +700,6 @@ body {
     padding: 20px;
     border-radius: var(--round);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin: 0 10px;
     min-width: 500px;
     display: flex;
     flex-direction: column;
@@ -970,6 +967,98 @@ body {
 }
 
 /* Responsive Adjustments */
+
+@media screen and (max-width: 1300px) {
+    :root {
+        --shortcut-size: 70px;
+    }
+
+    .shortcut-name {
+        font-size: 0.95rem;
+    }
+
+    .shortcut a {
+        padding: 9px;
+        border-radius: 9px;
+    }
+
+    .shortcuts-container {
+        gap: 25px;
+        padding: 18px;
+    }
+
+    .delete-shortcut-btn {
+        width: 18px;
+        height: 18px;
+        font-size: 0.9rem;
+        line-height: 18px;
+        top: -9px;
+        right: -9px;
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    .tools-row {
+        flex-direction: column;
+    }
+
+    .currency-exchanger,
+    .time-tools {
+        width: 100%;
+        max-width: none;
+    }
+
+    #advanced-btn,
+    .advanced-search {
+        display: none;
+    }
+
+.ai-tools,
+    .lang-tools {
+        min-width: unset; /* Remove fixed min-width */
+        max-width: unset; /* Remove fixed max-width */
+        padding: 15px;
+        width: 100%; /* Take full available width */
+    }
+
+    .lang-tools {
+        flex: 1; /* Takes about 1/3 of space (for 2 items) */
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+
+    .ai-tools {
+        flex: 2; /* Takes about 2/3 of space (for 5 items) */
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+
+    .bottom-section {
+        flex-direction: row; /* Stack tools vertically */
+        align-items: stretch; /* Make children take full width */
+    }
+
+    .ai-tool,
+    .lang-tools a {
+        padding: 8px 12px;
+        white-space: normal;
+        text-align: center;
+        justify-content: center; /* Center content */
+    }
+
+    .ai-tool span,
+    .lang-tools a span {
+        font-size: 0.9rem;
+    }
+
+    .ai-tool img,
+    .lang-tools a img {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+
+
+
 @media screen and (max-width: 992px) {
     .top-section {
         flex-direction: column;
@@ -982,6 +1071,35 @@ body {
 }
 
 @media (max-width: 992px) {
+
+    :root {
+        --shortcut-size: 60px;
+    }
+
+    .shortcut-name {
+        font-size: 0.9rem;
+    }
+
+    .shortcut a {
+        padding: 8px;
+        border-radius: 8px;
+    }
+
+    .shortcuts-container {
+        gap: 20px;
+        padding: 15px;
+    }
+
+    .delete-shortcut-btn {
+        width: 16px;
+        height: 16px;
+        font-size: 0.8rem;
+        line-height: 16px;
+        top: -8px;
+        right: -8px;
+    }
+
+
     .top-section {
         flex-direction: column;
         gap: 10px;
@@ -1009,9 +1127,6 @@ body {
         gap: 10px;
     }
 
-    .bottom-section {
-        display: none;
-    }
 }
 
 @media (max-width: 576px) {
