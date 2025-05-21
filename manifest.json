@@ -3,7 +3,7 @@
 	"name": "NewTab 2",
 	"version": "2.3",
 	"description": "xd",
-	"permissions": ["search", "storage"],
+	"permissions": ["search", "storage", "tabs"],
 	"optional_permissions": ["bookmarks"],
 	"host_permissions": [
         "https://www.google.com/complete/search?client=*",
