@@ -15,6 +15,7 @@ export function handleShortcutClick(event) {
     return false;
 }
 
+
 export function renderShortcuts() {
     if (!domElements.shortcuts.container) {
         console.error('Shortcuts container not found');
@@ -41,19 +42,10 @@ export function renderShortcuts() {
         shortcutEl.setAttribute('draggable', 'true');
         shortcutEl.dataset.index = index;
         
-        let mainDomain;
-        try {
-            mainDomain = new URL(shortcut.url).hostname;
-        } catch (e) {
-            console.warn(`Invalid URL for shortcut "${shortcut.name}": ${shortcut.url}`);
-            mainDomain = 'invalid';
-        }
-        const domainParts = mainDomain.split('.');
-        const domainName = domainParts.length > 2 ? domainParts.slice(-2).join('.') : mainDomain;
-
+        // Use the full URL for favicon fetching
         shortcutEl.innerHTML = `
             <a href="${shortcut.url}">
-                <img src="https://www.google.com/s2/favicons?domain=${domainName}&sz=64" 
+                <img src="https://www.google.com/s2/favicons?domain_url=${encodeURIComponent(shortcut.url)}&sz=64" 
                      onerror="this.src='/icons/fallback-icon.png';" alt="${shortcut.name}">
             </a>
             <span class="shortcut-name">${shortcut.name}</span>
@@ -62,6 +54,7 @@ export function renderShortcuts() {
         domElements.shortcuts.container.appendChild(shortcutEl);
     });
 
+    // Rest of the function (event listeners for delete and drag-and-drop) remains unchanged
     if (isEditMode) {
         document.querySelectorAll('.delete-shortcut-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -86,27 +79,30 @@ export function renderShortcuts() {
 
         shortcutEl.addEventListener('dragend', () => {
             shortcutEl.classList.remove('dragging');
-            localStorage.setItem('shortcutsConfig', JSON.stringify(shortcutsConfig));
-            console.log('Shortcuts order saved:', shortcutsConfig.shortcuts);
+            dragStartIndex = null;
         });
 
         shortcutEl.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            const dragOverIndex = parseInt(shortcutEl.dataset.index);
-            if (dragStartIndex !== dragOverIndex) {
-                reorderShortcuts(dragStartIndex, dragOverIndex);
-                dragStartIndex = dragOverIndex;
-            }
-        });
-
-        shortcutEl.addEventListener('dragenter', (e) => {
             e.preventDefault();
         });
 
         shortcutEl.addEventListener('drop', (e) => {
             e.preventDefault();
+            const dragEndIndex = parseInt(shortcutEl.dataset.index);
+            if (dragStartIndex !== null && dragStartIndex !== dragEndIndex) {
+                swapShortcuts(dragStartIndex, dragEndIndex);
+                dragStartIndex = null;
+            }
         });
     });
+}
+
+function swapShortcuts(index1, index2) {
+    const temp = shortcutsConfig.shortcuts[index1];
+    shortcutsConfig.shortcuts[index1] = shortcutsConfig.shortcuts[index2];
+    shortcutsConfig.shortcuts[index2] = temp;
+    localStorage.setItem('shortcutsConfig', JSON.stringify(shortcutsConfig));
+    renderShortcuts();
 }
 
 export function reorderShortcuts(fromIndex, toIndex) {

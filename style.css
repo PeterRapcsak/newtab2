@@ -10,22 +10,22 @@
 }
 
 :root {
-    --bg-color: #1a1a1a;
-    --accent-light: #2a2a2a;
-    --primary-blue: #3a3a3a;
-    --primary-dark: #333333;
-    --neutral-gray: #969696;
-    --text-light: #e0e0e0;
-    --text-dark: #b0b0b0;
-    --button-bg: #333333;
-    --button-hover: #4a4a4a;
-    --button-text: #ffffff;
-    --focus-color: #5a5a5a;
+    --bg-color: #1F2023;
+    --accent-light: #2E3033;
+    --primary-blue: #515255;
+    --primary-dark: #2E3033;
+    --neutral-gray: #626365;
+    --text-light: #E0E0E0;
+    --text-dark: #B0B0B0;
+    --button-bg: #515255;
+    --button-hover: #6957d0;
+    --button-text: #E0E0E0;
+    --focus-color: #6957d0;
     --gap: 24px;
-    --round: 12px;
+    --round: 16px; /* Increased for smoother edges */
     --shortcut-size: 80px;
-    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Slightly slower transition for smoothness */
+    --shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Softer shadow */
 }
 
 body {
