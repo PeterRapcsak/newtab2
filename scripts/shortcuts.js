@@ -16,6 +16,7 @@ export function handleShortcutClick(event) {
 }
 
 
+
 export function renderShortcuts() {
     if (!domElements.shortcuts.container) {
         console.error('Shortcuts container not found');
