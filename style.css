@@ -617,7 +617,6 @@ body {
     padding: 20px;
     border-radius: var(--round);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    min-width: 500px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -633,8 +632,6 @@ body {
 
 .lang-tools {
     flex: 1;
-    min-width: 150px;
-    max-width: 300px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 15px;
@@ -642,8 +639,6 @@ body {
 
 .ai-tools {
     flex: 1;
-    min-width: 700px;
-    max-width: 700px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 15px;
@@ -934,6 +929,28 @@ body {
 .ai-tools {
     box-shadow: none !important;
     min-height: auto !important;
+}
+
+
+
+
+#new-shortcut-name,
+#new-shortcut-url {
+    padding: 10px;
+    border: none;
+    background: var(--bg-color);
+    font-size: 1rem;
+    outline: none;
+    color: var(--text-light);
+    border-radius: 5px;
+}
+
+#new-shortcut-name {
+    flex: 1;
+}
+
+#new-shortcut-url {
+    flex: 7;
 }
 
 
