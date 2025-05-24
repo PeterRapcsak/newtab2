@@ -17,6 +17,7 @@ export function handleShortcutClick(event) {
 
 
 
+
 export function renderShortcuts() {
     if (!domElements.shortcuts.container) {
         console.error('Shortcuts container not found');
@@ -43,11 +44,14 @@ export function renderShortcuts() {
         shortcutEl.setAttribute('draggable', 'true');
         shortcutEl.dataset.index = index;
         
-        // Use the full URL for favicon fetching
+        const url = new URL(shortcut.url);
+        const domain = url.hostname;
+
+        // Use DuckDuckGo's favicon service
         shortcutEl.innerHTML = `
             <a href="${shortcut.url}">
-                <img src="https://www.google.com/s2/favicons?domain_url=${encodeURIComponent(shortcut.url)}&sz=64" 
-                     onerror="this.src='/icons/fallback-icon.png';" alt="${shortcut.name}">
+                <img src="https://icons.duckduckgo.com/ip3/${domain}.ico" 
+                    onerror="console.log('Image failed, loading fallback'); this.src='/icons/fallback-icon.png';" alt="${shortcut.name}">
             </a>
             <span class="shortcut-name">${shortcut.name}</span>
             ${isEditMode ? `<button class="delete-shortcut-btn" data-index="${index}">×</button>` : ''}

@@ -759,6 +759,7 @@ body {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
+
 /* Time Tools with Toggle */
 .time-tools {
     display: flex;
@@ -934,15 +935,6 @@ body {
     box-shadow: none !important;
     min-height: auto !important;
 }
-
-/* Responsive adjustments */
-
-
-
-
-
-
-
 
 
 /* Animations */
