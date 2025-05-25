@@ -17,11 +17,11 @@ export function initializeSearchSettings() {
     if (engineSelect) {
         engineSelect.value = selectedEngine;
         engineSelect.addEventListener('change', (e) => {
-            selectedEngine = e.target.value; // This is fine here, within search.js
-            console.log('Selected engine updated to:', selectedEngine); // Optional: for debugging
+            selectedEngine = e.target.value;
+            console.log('Selected engine:', selectedEngine);
         });
     } else {
-        console.error('Search engine select element not found');
+        console.error('Search engine not found');
     }
 }
 

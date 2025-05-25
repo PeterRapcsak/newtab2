@@ -49,11 +49,9 @@ export class Timer {
         this.remainingTime = 0;
         this.interval = null;
         this.inputBuffer = '';
-        this.display.setAttribute('tabindex', '0'); // Makes the element focusable
-        this.display.contentEditable = false; // Prevents direct text editing
-        this.display.setAttribute('aria-readonly', 'true'); // Accessibility
-
-        // Prevent default behavior for all keydown events except numbers
+        this.display.setAttribute('tabindex', '0');
+        this.display.contentEditable = false;
+        this.display.setAttribute('aria-readonly', 'true');
         this.display.addEventListener('keydown', (e) => {
             if (this.running) {
                 e.preventDefault();
@@ -63,17 +61,15 @@ export class Timer {
                 e.preventDefault();
                 this.handleInput(e.key);
             } else {
-                e.preventDefault(); // Block all other keys
+                e.preventDefault();
             }
         });
 
-        // Prevent pasting or other input methods
         this.display.addEventListener('input', (e) => {
             e.preventDefault();
-            this.updateDisplayFromSeconds(); // Revert to current time
+            this.updateDisplayFromSeconds();
         });
 
-        // Prevent context menu or other interactions
         this.display.addEventListener('paste', (e) => e.preventDefault());
         this.display.addEventListener('cut', (e) => e.preventDefault());
 

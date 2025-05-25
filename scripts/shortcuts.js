@@ -23,7 +23,7 @@ export function renderShortcuts() {
         console.error('Shortcuts container not found');
         return;
     }
-    domElements.shortcuts.container.innerHTML = ''; // Clear existing shortcuts
+    domElements.shortcuts.container.innerHTML = '';
     
     let shortcuts = [];
     try {
@@ -47,7 +47,6 @@ export function renderShortcuts() {
         const url = new URL(shortcut.url);
         const domain = url.hostname;
 
-        // Use DuckDuckGo's favicon service
         shortcutEl.innerHTML = `
             <a href="${shortcut.url}">
                 <img src="https://icons.duckduckgo.com/ip3/${domain}.ico" 
@@ -59,7 +58,6 @@ export function renderShortcuts() {
         domElements.shortcuts.container.appendChild(shortcutEl);
     });
 
-    // Rest of the function (event listeners for delete and drag-and-drop) remains unchanged
     if (isEditMode) {
         document.querySelectorAll('.delete-shortcut-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {

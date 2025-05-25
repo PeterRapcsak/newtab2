@@ -30,12 +30,11 @@ function init() {
     const buttonContainer = document.createElement('div');
     buttonContainer.className = 'button-container';
 
-    // Create export button
     domElements.buttons.export = document.createElement('button');
     domElements.buttons.export.id = 'export-btn';
     domElements.buttons.export.classList.add('action-btn');
     domElements.buttons.export.textContent = 'Export';
-    domElements.buttons.export.style.display = 'none'; // Hidden by default
+    domElements.buttons.export.style.display = 'none';
     domElements.buttons.export.addEventListener('click', () => {
         const shortcutsConfig = localStorage.getItem('shortcutsConfig');
         if (shortcutsConfig) {
@@ -51,12 +50,11 @@ function init() {
         }
     });
 
-    // Create import button
     domElements.buttons.import = document.createElement('button');
     domElements.buttons.import.id = 'import-btn';
     domElements.buttons.import.classList.add('action-btn');
     domElements.buttons.import.textContent = 'Import';
-    domElements.buttons.import.style.display = 'none'; // Hidden by default
+    domElements.buttons.import.style.display = 'none';
     domElements.buttons.import.addEventListener('click', () => {
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
@@ -86,19 +84,16 @@ function init() {
         fileInput.click();
     });
 
-    // Create edit button
     domElements.buttons.edit = document.createElement('button');
     domElements.buttons.edit.id = 'edit-btn';
     domElements.buttons.edit.textContent = 'Edit';
     domElements.buttons.edit.addEventListener('click', toggleEditMode);
 
-    // Create new button
     domElements.buttons.new = document.createElement('button');
     domElements.buttons.new.id = 'new-btn';
     domElements.buttons.new.textContent = 'New';
     domElements.buttons.new.addEventListener('click', toggleAddMode);
 
-    // Append in the order: import, export, edit, new
     buttonContainer.appendChild(domElements.buttons.import);
     buttonContainer.appendChild(domElements.buttons.export);
     buttonContainer.appendChild(domElements.buttons.edit);

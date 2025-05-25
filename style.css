@@ -22,10 +22,10 @@
     --button-text: #E0E0E0;
     --focus-color: #6957d0;
     --gap: 24px;
-    --round: 16px; /* Increased for smoother edges */
+    --round: 16px;
     --shortcut-size: 80px;
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Slightly slower transition for smoothness */
-    --shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Softer shadow */
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 body {
@@ -38,7 +38,6 @@ body {
     padding: var(--gap);
 }
 
-/* Top Section */
 .top-section {
     display: flex;
     width: 100%;
@@ -55,7 +54,6 @@ body {
     gap: var(--gap);
 }
 
-/* Digital Clock */
 #digital-clock {
     background-color: var(--accent-light);
     padding: 20px;
@@ -86,7 +84,6 @@ body {
     vertical-align: middle;
 }
 
-/* Bing Visual Search Button */
 #bing-visual-search-btn {
     background: none;
     border: none;
@@ -104,7 +101,6 @@ body {
     transition: transform 0.2s;
 }
 
-/* Glow effect when dragging an image over the search bar */
 .search-bar.drag-over {
     outline: 2px dashed #4285f4;
     box-shadow: 0 0 10px 3px rgba(66, 133, 244, 0.6);
@@ -112,7 +108,6 @@ body {
     transition: box-shadow 0.2s, outline 0.2s;
 }
 
-/* Search Bar */
 .search-bar {
     display: flex;
     gap: 10px;
@@ -155,7 +150,6 @@ body {
     transform: scale(1.05);
 }
 
-/* Add Shortcut Section */
 .add-shortcut {
     display: none;
     gap: 10px;
@@ -203,7 +197,6 @@ body {
     transform: scale(1.05);
 }
 
-/* Currency Exchanger */
 .currency-exchanger {
     padding: 20px;
     display: flex;
@@ -340,12 +333,12 @@ body {
 
 
 .time-segment:not(:last-child)::after {
-    margin: 0 0.2em; /* Equal spacing between segments */
+    margin: 0 0.2em;
 }
 
 .stopwatch .display .time-segment:nth-last-child(2)::after {
-    content: "."; /* Decimal for milliseconds in stopwatch */
-    margin: 0 0.2em; /* Consistent spacing */
+    content: ".";
+    margin: 0 0.2em;
 }
 
 .controls {
@@ -384,14 +377,12 @@ body {
     50% { opacity: 0.6; }
 }
 
-/* Button Container for Edit and New Buttons */
 .button-container {
     display: flex;
     gap: 10px;
     align-self: flex-end;
 }
 
-/* Edit and New Buttons */
 .action-btn,
 #edit-btn,
 #new-btn,
@@ -406,7 +397,6 @@ body {
     transition: var(--transition);
 }
 
-/* Hover effects */
 .action-btn:hover,
 #edit-btn:hover,
 #new-btn:hover,
@@ -415,7 +405,6 @@ body {
     transform: scale(1.05);
 }
 
-/* Shortcuts */
 .shortcuts-container {
     display: flex;
     gap: 30px;
@@ -492,7 +481,6 @@ body {
     transform: scale(1.1);
 }
 
-/* Language Tools */
 .lang-tools {
     display: flex;
     gap: 20px;
@@ -502,7 +490,6 @@ body {
     transition: var(--transition);
 }
 
-/* AI Tools */
 .ai-tools {
     display: flex;
     flex-wrap: wrap;
@@ -542,7 +529,6 @@ body {
     font-size: 1rem;
 }
 
-/* Advanced Search */
 .advanced-search {
     background-color: var(--accent-light);
     padding: 15px;
@@ -644,7 +630,6 @@ body {
     gap: 15px;
 }
 
-/* Advanced Search Grid */
 .advanced-grid {
     display: grid;
     gap: 12px;
@@ -723,7 +708,6 @@ body {
     color: var(--neutral-gray);
 }
 
-/* Section Icons */
 .section-icon {
     display: none;
     font-size: 2rem;
@@ -731,7 +715,6 @@ body {
     padding: 10px;
 }
 
-/* Tools Row to place currency exchanger and time tools side by side */
 .tools-row {
     display: flex;
     gap: var(--gap);
@@ -754,8 +737,6 @@ body {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-
-/* Time Tools with Toggle */
 .time-tools {
     display: flex;
     flex-direction: column;
@@ -796,7 +777,6 @@ body {
     display: block;
 }
 
-/* Adjust stopwatch and timer styles */
 .stopwatch, .timer {
     padding: 0;
     background-color: transparent;
@@ -807,10 +787,10 @@ body {
 
 .stopwatch .display,
 .timer .display {
-    font-family: monospace; /* Ensures all characters have the same width */
-    white-space: nowrap; /* Prevents line breaks */
-    font-size: 1.5rem; /* Adjust size as needed */
-    color: var(--text-light); /* Match your theme */
+    font-family: monospace;
+    white-space: nowrap;
+    font-size: 1.5rem;
+    color: var(--text-light);
 }
 
 .time-tools {
@@ -819,9 +799,6 @@ body {
     gap: 10px;
 }
 
-/* Remove toggle-buttons styling as it's no longer a separate div */
-
-/* Style the controls div */
 .controls {
     display: flex;
     justify-content: center;
@@ -847,7 +824,6 @@ body {
     background-color: var(--button-hover);
 }
 
-/* Adjust stopwatch and timer divs */
 .time-tool-content > div {
     display: none;
 }
@@ -869,46 +845,42 @@ body {
 
 
 
-/* Bottom Section - Full width but compact */
 .bottom-section {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 8px 12px; /* Reduced vertical padding */
-    gap: 10px; /* Smaller gap between elements */
+    padding: 8px 12px; 
+    gap: 10px;
     background-color: var(--accent-light);
-    border-radius: var(--round) var(--round) 0 0; /* Rounded top corners only */
-    width: 100%; /* Full width */
-    max-width: 100vw; /* Ensure it doesn't overflow */
-    justify-content: center; /* Center content horizontally */
-    align-items: center; /* Center vertically */
-    flex-wrap: nowrap; /* Prevent wrapping if possible */
-    transform: none !important; /* Remove any previous transforms */
+    border-radius: var(--round) var(--round) 0 0;
+    width: 100%;
+    max-width: 100vw;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    transform: none !important;
     z-index: 100;
 }
 
-/* Language Tools - More compact layout */
 .lang-tools {
     min-width: auto;
     padding: 8px !important;
     gap: 8px;
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    flex: 1; /* Take available space */
-    margin: 0 4px; /* Small horizontal margin */
+    flex: 1;
+    margin: 0 4px;
 }
 
-/* AI Tools - Tight grid layout */
 .ai-tools {
     min-width: auto;
     padding: 8px !important;
     gap: 8px;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    flex: 2; /* Take more space than lang-tools */
-    margin: 0 4px; /* Small horizontal margin */
+    flex: 2;
+    margin: 0 4px;
 }
 
-/* Tool items - Compact styling */
 .ai-tool {
     padding: 6px 8px;
     gap: 6px;
@@ -917,19 +889,19 @@ body {
 
 .ai-tool img {
     width: 22px;
-    height: 22px; /* Slightly smaller icons */
+    height: 22px;
 }
 
 .ai-tool span {
-    font-size: 0.85rem; /* Slightly smaller text */
+    font-size: 0.85rem;
 }
 
-/* Remove unnecessary white space */
 .lang-tools, 
 .ai-tools {
     box-shadow: none !important;
     min-height: auto !important;
 }
+
 
 
 
@@ -954,7 +926,10 @@ body {
 }
 
 
-/* Animations */
+
+
+
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -978,7 +953,15 @@ body {
     to { opacity: 1; transform: scale(1); }
 }
 
-/* Responsive Adjustments */
+
+
+
+
+
+
+
+
+
 
 @media screen and (max-width: 1300px) {
     :root {
@@ -1027,25 +1010,25 @@ body {
 
     .ai-tools,
     .lang-tools {
-        min-width: unset; /* Remove fixed min-width */
-        max-width: unset; /* Remove fixed max-width */
+        min-width: unset;
+        max-width: unset;
         padding: 15px;
-        width: 100%; /* Take full available width */
+        width: 100%;
     }
 
     .lang-tools {
-        flex: 1; /* Takes about 1/3 of space (for 2 items) */
+        flex: 1;
         grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     }
 
     .ai-tools {
-        flex: 2; /* Takes about 2/3 of space (for 5 items) */
+        flex: 2;
         grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     }
 
     .bottom-section {
-        flex-direction: row; /* Stack tools vertically */
-        align-items: stretch; /* Make children take full width */
+        flex-direction: row;
+        align-items: stretch;
     }
 
     .ai-tool,
@@ -1053,7 +1036,7 @@ body {
         padding: 8px 12px;
         white-space: normal;
         text-align: center;
-        justify-content: center; /* Center content */
+        justify-content: center;
     }
 
     .ai-tool span,
@@ -1067,9 +1050,6 @@ body {
         height: 24px;
     }
 }
-
-
-
 
 @media screen and (max-width: 992px) {
     .top-section {
@@ -1175,14 +1155,10 @@ body {
     }
 }
 
-
-
-
-
 @media (max-width: 768px) {
     .bottom-section {
-        flex-wrap: wrap; /* Allow wrapping on small screens */
-        gap: 6px; /* Smaller gap */
+        flex-wrap: wrap;
+        gap: 6px;
         padding: 6px 8px;
     }
     
@@ -1194,7 +1170,7 @@ body {
     }
     
     .ai-tool span {
-        font-size: 0.8rem; /* Even smaller text on mobile */
+        font-size: 0.8rem;
     }
 }
 
