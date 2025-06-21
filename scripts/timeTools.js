@@ -35,10 +35,31 @@ export class Stopwatch {
     }
 
     updateDisplay() {
-        const totalSeconds = (this.time / 1000).toFixed(2);
-        this.display.innerHTML = `
-            <span class="digit">${totalSeconds}</span>
-        `;
+        const totalMilliseconds = this.time;
+
+        const hours = Math.floor(totalMilliseconds / 3600000);
+        const minutes = Math.floor((totalMilliseconds % 3600000) / 60000);
+        const seconds = Math.floor((totalMilliseconds % 60000) / 1000);
+        const centiseconds = Math.floor((totalMilliseconds % 1000) / 10);
+
+        const formattedCentiseconds = `<span class="digit">${String(centiseconds).padStart(2, '0')}</span>`;
+        let mainDisplayHtml = '';
+
+        if (hours > 0) {
+            // Show H:MM:SS
+            const formattedMinutes = String(minutes).padStart(2, '0');
+            const formattedSeconds = String(seconds).padStart(2, '0');
+            mainDisplayHtml = `<span class="digit">${hours}</span><span class="time-segment">:</span><span class="digit">${formattedMinutes}</span><span class="time-segment">:</span><span class="digit">${formattedSeconds}</span>`;
+        } else if (minutes > 0) {
+            // Show M:SS
+            const formattedSeconds = String(seconds).padStart(2, '0');
+            mainDisplayHtml = `<span class="digit">${minutes}</span><span class="time-segment">:</span><span class="digit">${formattedSeconds}</span>`;
+        } else {
+            // Show S
+            mainDisplayHtml = `<span class="digit">${seconds}</span>`;
+        }
+
+        this.display.innerHTML = `${mainDisplayHtml}<span class="time-segment">.</span>${formattedCentiseconds}`;
     }
 }
 

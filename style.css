@@ -1,3 +1,4 @@
+
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap");
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&family=Roboto+Mono&display=swap");
@@ -316,6 +317,7 @@ body {
     min-width: 1.2ch;
     text-align: center;
     font-variant-numeric: tabular-nums;
+    font-family: 'Roboto Mono', monospace;
 }
 
 .stopwatch .display {
@@ -333,11 +335,6 @@ body {
 
 
 .time-segment:not(:last-child)::after {
-    margin: 0 0.2em;
-}
-
-.stopwatch .display .time-segment:nth-last-child(2)::after {
-    content: ".";
     margin: 0 0.2em;
 }
 
@@ -1173,18 +1170,3 @@ body {
         font-size: 0.8rem;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
