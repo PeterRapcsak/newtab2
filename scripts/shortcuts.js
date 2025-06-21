@@ -83,7 +83,12 @@ export function renderShortcuts() {
 
         let iconSrc;
         if (GOOGLE_SERVICE_ICONS[domain]) {
-            iconSrc = BASE_ICON_URL + GOOGLE_SERVICE_ICONS[domain];
+            let iconName = GOOGLE_SERVICE_ICONS[domain];
+            if (iconName.endsWith('.png')) {
+                iconSrc = BASE_ICON_URL + iconName;
+            } else {
+                iconSrc = BASE_ICON_URL + iconName + '_48dp.png';
+            }
         } else if (domain === 'unknown.domain') { 
             iconSrc = FALLBACK_ICON_URL;
         } else {
