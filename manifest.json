@@ -1,15 +1,13 @@
 {
 	"manifest_version": 3,
-	"name": "NewTab 2",
+	"name": "NewTab 2.1",
 	"version": "2.4.1",
 	"description": "replaces chrome://newtab with index.html (best suited for developers)",
-	"permissions": ["search", "storage", "tabs"],
-	"optional_permissions": ["bookmarks"],
+	"permissions": ["storage", "tabs"],
 	"host_permissions": [
 	    "https://www.google.com/complete/search?client=*",
 	    "https://duckduckgo.com/ac/?q=*",
 	    "https://search.brave.com/api/suggest?q=*",
-	    "https://search.brave.com/*",
 	    "https://*.wikipedia.org/w/api.php?action=opensearch&search=*",
 	    "https://api.frankfurter.app/*"
 	],
